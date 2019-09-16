@@ -1,5 +1,8 @@
 import React from 'react';
+import axios from 'axios';
+
 import './styles.css';
+
 import ShipSelector from '../ShipSelector';
 import Ship from '../Ship';
 
@@ -13,11 +16,11 @@ class Overview extends React.Component {
     };
   }
   componentDidMount() {
-    fetch('http://localhost:3001/api/ships')
-      .then( res => res.json() )
-      .then( (ships) => {
+    axios.get('http://localhost:3001/api/ships')
+      .then( (res) => {
+        console.log(res.data);
         this.setState({
-          ships: ships
+          ships: [ ...res.data ],
         })
       })
       .catch(console.log);
