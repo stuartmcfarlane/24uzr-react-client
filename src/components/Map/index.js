@@ -35,7 +35,13 @@ class Map extends React.Component {
     const radius = getRadius(boundingBox);
     const bouys = (this.state.bouys || []).map( bouy => {
       return (
-        <circle key={bouy._id} cx={bouy.location.lon} cy={bouy.location.lat} r={radius} fill="red" />
+        <circle key={bouy._id}
+                onClick={this.props.bouySelected.bind(this, bouy)}
+                cx={bouy.location.lon}
+                cy={bouy.location.lat}
+                r={radius}
+                fill="red"
+        />
       );
     });
     const lineWidth = radius / 5;

@@ -8,11 +8,18 @@ class Overview extends React.Component {
     super(props);
     this.state = {
       ship: null,
+      selectedBouy: null
     };
   }
   shipSelected = (ship) => {
     this.setState({
       ship: ship
+    })
+  }
+  bouySelected = (bouy) => {
+    console.log('bouy', bouy)
+    this.setState({
+      selectedBouy: bouy
     })
   }
   render() {
@@ -26,9 +33,16 @@ class Overview extends React.Component {
               </React.Fragment>
             : <ShipSelector ships={this.state.ships} shipSelected={this.shipSelected}/>
           }
+          {this.state.selectedBouy
+              ? <React.Fragment>
+                  <h3>Selected bouy</h3>
+                  <p>{this.state.selectedBouy.name}</p>
+                </React.Fragment>
+              : ''
+          }
         </div>
         <div className="main-panel" style={mainPanelStyle}>
-          <Map />
+          <Map bouySelected={this.bouySelected}/>
         </div>
         
       </div>
