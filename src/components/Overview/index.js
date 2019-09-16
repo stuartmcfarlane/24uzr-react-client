@@ -1,6 +1,7 @@
 import React from 'react';
 import ShipSelector from '../ShipSelector';
 import Ship from '../Ship';
+import Map from '../Map';
 
 class Overview extends React.Component {
   constructor(props) {
@@ -27,6 +28,7 @@ class Overview extends React.Component {
           }
         </div>
         <div className="main-panel" style={mainPanelStyle}>
+          <Map />
         </div>
         
       </div>
