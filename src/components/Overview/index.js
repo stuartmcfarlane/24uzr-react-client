@@ -6,12 +6,13 @@ import './styles.css';
 import ShipSelector from '../ShipSelector';
 import Ship from '../Ship';
 
+console.log(Ship)
+
 class Overview extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      error: null,
-      isLoaded: false,
+      ship: null,
       ships: []
     };
   }
@@ -23,12 +24,18 @@ class Overview extends React.Component {
           ships: [ ...res.data ],
         })
       })
-      .catch(console.log);
+      .catch(console.error);
+  }
+  shipSelected = (ship) => {
+    this.setState({
+      ship: ship
+    })
   }
   render() {
     return (
       <div className="Overview">
-        <ShipSelector ships={this.state.ships}/>
+        <Ship ship={this.state.ship} />
+        <ShipSelector ships={this.state.ships} shipSelected={this.shipSelected}/>
       </div>
     );
   }

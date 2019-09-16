@@ -1,19 +1,16 @@
 import React from 'react';
 import './styles.css';
 
-class Ship extends React.Component {
-    render() {
-        const { value } = this.props.value;
-        if (!value) return <div>none selected</div>
-        return (
-            <div className="Ship">
-                <dl>
-                    <dt>Name</dt>
-                    <dl>{value.name}</dl>
-                </dl>
-            </div>
-        );
-    }
+function Ship(props) {
+    if (!props.ship) return <div>none selected</div>
+    return (
+        <div className="Ship">
+            <dl>
+                <dt>Name</dt>
+                <dl>{props.ship.name}</dl>
+            </dl>
+        </div>
+    );
 }
 
 export default Ship;
