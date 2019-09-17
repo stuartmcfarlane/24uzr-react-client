@@ -104,8 +104,8 @@ class Map extends React.Component {
         <g transform={transform}>
           {topLeft}
           {bottomRight}
-          {bouyCircles}
           {legLines}
+          {bouyCircles}
         </g>
       </svg>
     );
