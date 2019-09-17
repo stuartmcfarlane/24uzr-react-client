@@ -6,7 +6,7 @@ class Map extends React.Component {
     super(props);
     this.state = {
       boundingBox: {},
-      viewPort: {},
+      viewBox: {},
       legs: [],
       bouys: [],
       bouysById: {},
@@ -18,7 +18,7 @@ class Map extends React.Component {
       .then( (res) => {
         const bouys = [ ...res.data ];
         const boundingBox = getBoundingBox(bouys);
-        const viewBox = getViewBox(boundingBox);
+        const viewBox = getViewBox(boundingBox, getRadius(boundingBox));
 
         this.setState({
           boundingBox,
@@ -93,13 +93,18 @@ class Map extends React.Component {
             d={bottomRightPath}
       />
     );
+    console.log(viewBox)
+    const transform=`scale(1,-1) translate(0,-2 * ${boundingBox.top})`;
+    // const transform=`scale(1,-1)`;
     const svg = (
       <svg style={svgStyle}
            viewBox={viewBox}>
-        {topLeft}
-        {bottomRight}
-        {bouyCircles}
-        {legLines}
+        <g transform={transform}>
+          {topLeft}
+          {bottomRight}
+          {bouyCircles}
+          {legLines}
+        </g>
       </svg>
     );
 
@@ -108,6 +113,13 @@ class Map extends React.Component {
         {svg}
       </div>
     );
+  }
+}
+
+const loc2svg = (loc) => {
+  return {
+    x: loc.lon,
+    y: -1 * loc.lat,
   }
 }
 
@@ -122,20 +134,18 @@ const getBoundingBox = (bouys) => {
   },
   { left: 9999, top: 0, right: 0, bottom: 9999 });
 }
-const getViewBox = (boundingBox) => {
+const getViewBox = (boundingBox, margin) => {
   const tightViewBox = {
     x: boundingBox.left,
     y: boundingBox.bottom,
     width: boundingBox.right - boundingBox.left,
     height: boundingBox.top - boundingBox.bottom,
   };
-  const marginX = tightViewBox.width/20;
-  const marginY = tightViewBox.height/20;
   const { x, y, width, height } = {
-    x: tightViewBox.x - marginX,
-    y: tightViewBox.y - marginY,
-    width: tightViewBox.width + (2 * marginX),
-    height: tightViewBox.height + (2 * marginY),
+    x: tightViewBox.x - margin,
+    y: tightViewBox.y - margin,
+    width: tightViewBox.width + (2 * margin),
+    height: tightViewBox.height + (2 * margin),
   };
 
   return `${x} ${y} ${width} ${height}`;
@@ -154,6 +164,7 @@ const getBouysFromLeg = (bouysById, leg) => {
 const mapStyle = {
   width: '100%',
   height: '100%',
+  padding: '1rem',
 };
 
 const svgStyle = {
