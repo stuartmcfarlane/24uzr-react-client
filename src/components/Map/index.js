@@ -5,17 +5,25 @@ class Map extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      boundingBox: {},
+      viewPort: {},
       legs: [],
       bouys: [],
-      bouysById: {}
+      bouysById: {},
     };
   }
   componentDidMount() {
     axios
       .get('http://localhost:3001/api/bouys')
       .then( (res) => {
+        const bouys = [ ...res.data ];
+        const boundingBox = getBoundingBox(bouys);
+        const viewBox = getViewBox(boundingBox);
+
         this.setState({
-          bouys: [ ...res.data ],
+          boundingBox,
+          viewBox,
+          bouys,
           bouysById: res.data.reduce( (bouysById, bouy) => {
             bouysById[bouy._id] = bouy; return bouysById;
           }, {}),
@@ -30,10 +38,16 @@ class Map extends React.Component {
       .catch(console.error);
   }
   render() {
-    const boundingBox = getBoundingBox(this.state.bouys);
-    const viewBox = getViewBox(boundingBox);
+    const {
+      boundingBox,
+      viewBox,
+      bouys,
+      legs,
+      bouysById
+    } = this.state;
+    if (!bouys.length) return 'loadng...';
     const radius = getRadius(boundingBox);
-    const bouys = (this.state.bouys || []).map( bouy => {
+    const bouyCircles = (bouys || []).map( bouy => {
       return (
         <circle key={bouy._id}
                 onClick={this.props.bouySelected.bind(this, bouy)}
@@ -45,8 +59,8 @@ class Map extends React.Component {
       );
     });
     const lineWidth = radius / 5;
-    const legs =  (this.state.legs || []).map( leg => {
-      const { start, end } = getBouysFromLeg( this.state.bouysById, leg );
+    const legLines =  (legs || []).map( leg => {
+      const { start, end } = getBouysFromLeg( bouysById, leg );
       return (
         <line key={leg._id}
               x1={start.location.lon}
@@ -58,14 +72,40 @@ class Map extends React.Component {
         />
       );
     });
+    const cornerMarkerLength = radius * 5;
+    const topLeftPath = (
+      `M ${boundingBox.left + cornerMarkerLength} ${boundingBox.top}
+       L ${boundingBox.left} ${boundingBox.top}
+       L ${boundingBox.left} ${boundingBox.top - cornerMarkerLength}`
+    );
+    const topLeft = (
+      <path fill="transparent" stroke="blue" strokeWidth={lineWidth}
+            d={topLeftPath}
+      />
+    );
+    const bottomRightPath = (
+      `M ${boundingBox.right - cornerMarkerLength} ${boundingBox.bottom}
+       L ${boundingBox.right} ${boundingBox.bottom}
+       L ${boundingBox.right} ${boundingBox.bottom + cornerMarkerLength}`
+     );
+    const bottomRight = (
+      <path fill="transparent" stroke="blue" strokeWidth={lineWidth}
+            d={bottomRightPath}
+      />
+    );
+    const svg = (
+      <svg style={svgStyle}
+           viewBox={viewBox}>
+        {topLeft}
+        {bottomRight}
+        {bouyCircles}
+        {legLines}
+      </svg>
+    );
 
     return (
       <div className="Map" style={mapStyle}>
-        {
-          this.state.bouys.length
-            ? <svg style={svgStyle} viewBox={viewBox}>{bouys}{legs}</svg>
-            : ''
-        }
+        {svg}
       </div>
     );
   }
@@ -89,8 +129,8 @@ const getViewBox = (boundingBox) => {
     width: boundingBox.right - boundingBox.left,
     height: boundingBox.top - boundingBox.bottom,
   };
-  const marginX = tightViewBox.width/50;
-  const marginY = tightViewBox.height/50;
+  const marginX = tightViewBox.width/20;
+  const marginY = tightViewBox.height/20;
   const { x, y, width, height } = {
     x: tightViewBox.x - marginX,
     y: tightViewBox.y - marginY,

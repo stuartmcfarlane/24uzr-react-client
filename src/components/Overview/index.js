@@ -37,6 +37,8 @@ class Overview extends React.Component {
               ? <React.Fragment>
                   <h3>Selected bouy</h3>
                   <p>{this.state.selectedBouy.name}</p>
+                  <p>{this.state.selectedBouy.location.lat.toFixed(4)} N</p>
+                  <p>{this.state.selectedBouy.location.lon.toFixed(4)} E</p>
                 </React.Fragment>
               : ''
           }
@@ -48,6 +50,12 @@ class Overview extends React.Component {
       </div>
     );
   }
+}
+
+const displayLocation = (loc) => {
+  const lat = loc.lat.toFixed(4);
+  const lon = loc.lon.toFixed(4);
+  return `${lat} N ${lon} E`;
 }
 
 const overviewStyle = {
