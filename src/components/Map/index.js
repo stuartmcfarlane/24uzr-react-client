@@ -48,11 +48,12 @@ class Map extends React.Component {
     if (!bouys.length) return 'loadng...';
     const radius = getRadius(boundingBox);
     const bouyCircles = (bouys || []).map( bouy => {
+      const c = loc2svg(bouy.location);
       return (
         <circle key={bouy._id}
                 onClick={this.props.bouySelected.bind(this, bouy)}
-                cx={bouy.location.lon}
-                cy={bouy.location.lat}
+                cx={c.x}
+                cy={c.y}
                 r={radius}
                 fill="red"
         />
@@ -61,12 +62,14 @@ class Map extends React.Component {
     const lineWidth = radius / 5;
     const legLines =  (legs || []).map( leg => {
       const { start, end } = getBouysFromLeg( bouysById, leg );
+      const p1 = loc2svg(start.location);
+      const p2 = loc2svg(end.location);
       return (
         <line key={leg._id}
-              x1={start.location.lon}
-              y1={start.location.lat}
-              x2={end.location.lon}
-              y2={end.location.lat}
+              x1={p1.x}
+              y1={p1.y}
+              x2={p2.x}
+              y2={p2.y}
               stroke="green"
               strokeWidth={lineWidth}
         />
@@ -93,9 +96,8 @@ class Map extends React.Component {
             d={bottomRightPath}
       />
     );
-    console.log(viewBox)
-    const transform=`scale(1,-1) translate(0,-2 * ${boundingBox.top})`;
-    // const transform=`scale(1,-1)`;
+    // const transform=`scale(1,-1) translate(0,-2 * ${boundingBox.top})`;
+    const transform=`scale(1,1)`;
     const svg = (
       <svg style={svgStyle}
            viewBox={viewBox}>
@@ -135,9 +137,10 @@ const getBoundingBox = (bouys) => {
   { left: 9999, top: 0, right: 0, bottom: 9999 });
 }
 const getViewBox = (boundingBox, margin) => {
+  const topLeft = loc2svg({lon: boundingBox.left, lat: boundingBox.top});
   const tightViewBox = {
-    x: boundingBox.left,
-    y: boundingBox.bottom,
+    x: topLeft.x,
+    y: topLeft.y,
     width: boundingBox.right - boundingBox.left,
     height: boundingBox.top - boundingBox.bottom,
   };

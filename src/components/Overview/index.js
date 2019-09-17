@@ -17,7 +17,6 @@ class Overview extends React.Component {
     })
   }
   bouySelected = (bouy) => {
-    console.log('bouy', bouy)
     this.setState({
       selectedBouy: bouy
     })
@@ -50,12 +49,6 @@ class Overview extends React.Component {
       </div>
     );
   }
-}
-
-const displayLocation = (loc) => {
-  const lat = loc.lat.toFixed(4);
-  const lon = loc.lon.toFixed(4);
-  return `${lat} N ${lon} E`;
 }
 
 const overviewStyle = {
