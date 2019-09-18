@@ -37,6 +37,7 @@ class Map extends React.Component {
       })
       .catch(console.error);
   }
+
   render() {
     const {
       boundingBox,
@@ -47,18 +48,29 @@ class Map extends React.Component {
     } = this.state;
     if (!bouys.length) return 'loadng...';
     const radius = getRadius(boundingBox);
+    const circleStrokeWidth = radius / 5;
     const bouyCircles = (bouys || []).map( bouy => {
       const c = loc2svg(bouy.location);
+      const fill = bouy._id === this.props.startBouy
+                 ? 'green'
+                 : bouy._id === this.props.endBouy
+                 ? 'red'
+                 : 'white';
       return (
         <circle key={bouy._id}
                 onClick={this.props.bouySelected.bind(this, bouy)}
+                onMouseEnter={this.props.bouyHovered.bind(this, bouy)}
+                onMouseLeave={this.props.bouyHovered.bind(this, null)}
                 cx={c.x}
                 cy={c.y}
                 r={radius}
-                fill="red"
+                stroke="black"
+                strokeWidth={circleStrokeWidth}
+                fill={fill}
         />
       );
     });
+
     const lineWidth = radius / 5;
     const legLines =  (legs || []).map( leg => {
       const { start, end } = getBouysFromLeg( bouysById, leg );
