@@ -88,37 +88,27 @@ class Map extends React.Component {
         />
       );
     });
-    const cornerMarkerLength = radius * 5;
-    const topLeftPath = (
-      `M ${boundingBox.left + cornerMarkerLength} ${boundingBox.top}
-       L ${boundingBox.left} ${boundingBox.top}
-       L ${boundingBox.left} ${boundingBox.top - cornerMarkerLength}`
-    );
-    const topLeft = (
-      <path fill="transparent" stroke="blue" strokeWidth={lineWidth}
-            d={topLeftPath}
-      />
-    );
-    const bottomRightPath = (
-      `M ${boundingBox.right - cornerMarkerLength} ${boundingBox.bottom}
-       L ${boundingBox.right} ${boundingBox.bottom}
-       L ${boundingBox.right} ${boundingBox.bottom + cornerMarkerLength}`
-     );
-    const bottomRight = (
-      <path fill="transparent" stroke="blue" strokeWidth={lineWidth}
-            d={bottomRightPath}
-      />
-    );
-    // const transform=`scale(1,-1) translate(0,-2 * ${boundingBox.top})`;
+    const route = this.props.route
+                ? <path stroke="green"
+                     strokeWidth={lineWidth}
+                     d={
+                       'M' + this.props.route
+                         .map(id => this.state.bouysById[id])
+                         .map(bouy => {
+                           const { x, y } = loc2svg(bouy.location);
+                           return `${x}, ${y}`;
+                         }).join(' L')
+                     }
+                />
+                : '';
     const transform=`scale(1,1)`;
     const svg = (
       <svg style={svgStyle}
            viewBox={viewBox}>
         <g transform={transform}>
-          {topLeft}
-          {bottomRight}
           {legLines}
           {bouyCircles}
+          {route}
         </g>
       </svg>
     );

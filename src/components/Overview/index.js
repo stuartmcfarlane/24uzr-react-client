@@ -32,6 +32,12 @@ class Overview extends React.Component {
       hoveredBouy: bouy
     })
   }
+  setRoute = (route) => {
+    this.setState({
+      route: route
+    })
+
+  }
   setStartBouy = (bouy) => {
     this.setState({
       selectedBouy: null,
@@ -39,11 +45,8 @@ class Overview extends React.Component {
     })
     const { endBouy } = this.state;
     if (bouy && endBouy) {
-      console.log('fetching route')
       axios.get(`http://localhost:3001/api/routes?start=${bouy._id}&end=${endBouy._id}`)
-        .then((res) => this.setState({
-          route: res.data
-        }))
+        .then((res) => this.setRoute(res.data.path))
     }
   }
   setEndBouy = (bouy) => {
@@ -53,11 +56,8 @@ class Overview extends React.Component {
     });
     const { startBouy } = this.state;
     if (startBouy && bouy) {
-      console.log('fetching route')
       axios.get(`http://localhost:3001/api/routes?start=${startBouy._id}&end=${bouy._id}`)
-        .then((res) => this.setState({
-          route: res.data
-        }))
+        .then((res) => this.setRoute(res.data.path))
     }
   }
   render() {
@@ -121,7 +121,7 @@ class Overview extends React.Component {
                bouyHovered={this.bouyHovered}
                startBouy={this.state.startBouy}
                endBouy={this.state.endBouy}
-               routeBouy={this.state.route}
+               route={this.state.route}
                />
         </div>
         
