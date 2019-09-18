@@ -15,7 +15,7 @@ class Map extends React.Component {
   componentDidMount() {
     axios
       .get('http://localhost:3001/api/bouys')
-      .then( (res) => {
+      .then((res) => {
         const bouys = [ ...res.data ];
         const boundingBox = getBoundingBox(bouys);
         const viewBox = getViewBox(boundingBox, getRadius(boundingBox));
@@ -24,13 +24,13 @@ class Map extends React.Component {
           boundingBox,
           viewBox,
           bouys,
-          bouysById: res.data.reduce( (bouysById, bouy) => {
+          bouysById: res.data.reduce((bouysById, bouy) => {
             bouysById[bouy._id] = bouy; return bouysById;
           }, {}),
         });
       })
-      .then( () => axios.get('http://localhost:3001/api/legs'))
-      .then( (res) => {
+      .then(() => axios.get('http://localhost:3001/api/legs'))
+      .then((res) => {
         this.setState({
           legs: [ ...res.data ],
         });
@@ -46,14 +46,15 @@ class Map extends React.Component {
       legs,
       bouysById
     } = this.state;
+    const { startBouy, endBouy } = this.props;
     if (!bouys.length) return 'loadng...';
     const radius = getRadius(boundingBox);
     const circleStrokeWidth = radius / 5;
     const bouyCircles = (bouys || []).map( bouy => {
       const c = loc2svg(bouy.location);
-      const fill = bouy._id === this.props.startBouy
+      const fill = startBouy && bouy._id === startBouy._id
                  ? 'green'
-                 : bouy._id === this.props.endBouy
+                 : endBouy && bouy._id === endBouy._id
                  ? 'red'
                  : 'white';
       return (
@@ -64,7 +65,7 @@ class Map extends React.Component {
                 cx={c.x}
                 cy={c.y}
                 r={radius}
-                stroke="black"
+                stroke="#666"
                 strokeWidth={circleStrokeWidth}
                 fill={fill}
         />
@@ -82,7 +83,7 @@ class Map extends React.Component {
               y1={p1.y}
               x2={p2.x}
               y2={p2.y}
-              stroke="green"
+              stroke="#aaa"
               strokeWidth={lineWidth}
         />
       );
@@ -138,7 +139,7 @@ const loc2svg = (loc) => {
 }
 
 const getBoundingBox = (bouys) => {
-  return bouys.reduce( (boundingBox, bouy) => {
+  return bouys.reduce((boundingBox, bouy) => {
     return {
       left: Math.min(boundingBox.left, bouy.location.lon),
       top: Math.max(boundingBox.top, bouy.location.lat),

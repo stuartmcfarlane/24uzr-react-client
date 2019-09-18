@@ -3,6 +3,8 @@ import ShipSelector from '../ShipSelector';
 import Ship from '../Ship';
 import Map from '../Map';
 
+import axios from 'axios';
+
 class Overview extends React.Component {
   constructor(props) {
     super(props);
@@ -12,6 +14,7 @@ class Overview extends React.Component {
       hoveredBouy: null,
       startBouy: null,
       endBouy: null,
+      route: null
     };
   }
   shipSelected = (ship) => {
@@ -34,12 +37,28 @@ class Overview extends React.Component {
       selectedBouy: null,
       startBouy: bouy
     })
+    const { endBouy } = this.state;
+    if (bouy && endBouy) {
+      console.log('fetching route')
+      axios.get(`http://localhost:3001/api/routes?start=${bouy._id}&end=${endBouy._id}`)
+        .then((res) => this.setState({
+          route: res.data
+        }))
+    }
   }
   setEndBouy = (bouy) => {
     this.setState({
       selectedBouy: null,
       endBouy: bouy
-    })
+    });
+    const { startBouy } = this.state;
+    if (startBouy && bouy) {
+      console.log('fetching route')
+      axios.get(`http://localhost:3001/api/routes?start=${startBouy._id}&end=${bouy._id}`)
+        .then((res) => this.setState({
+          route: res.data
+        }))
+    }
   }
   render() {
     return (
@@ -102,6 +121,7 @@ class Overview extends React.Component {
                bouyHovered={this.bouyHovered}
                startBouy={this.state.startBouy}
                endBouy={this.state.endBouy}
+               routeBouy={this.state.route}
                />
         </div>
         
