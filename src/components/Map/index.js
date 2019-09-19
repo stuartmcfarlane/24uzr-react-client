@@ -83,7 +83,7 @@ class Map extends React.Component {
               y1={p1.y}
               x2={p2.x}
               y2={p2.y}
-              stroke="#aaa"
+              stroke="#ccc"
               strokeWidth={lineWidth}
         />
       );
@@ -91,6 +91,7 @@ class Map extends React.Component {
     const route = this.props.route
                 ? <path stroke="green"
                      strokeWidth={lineWidth}
+                     fill="none"
                      d={
                        'M' + this.props.route
                          .map(id => this.state.bouysById[id])
