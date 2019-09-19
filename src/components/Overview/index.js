@@ -39,6 +39,9 @@ class Overview extends React.Component {
 
   }
   setStartBouy = (bouy) => {
+    if (!bouy) {
+      this.setRoute(null)
+    }
     this.setState({
       selectedBouy: null,
       startBouy: bouy
@@ -50,6 +53,9 @@ class Overview extends React.Component {
     }
   }
   setEndBouy = (bouy) => {
+    if (!bouy) {
+      this.setRoute(null)
+    }
     this.setState({
       selectedBouy: null,
       endBouy: bouy
