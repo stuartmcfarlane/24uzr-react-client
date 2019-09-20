@@ -17,9 +17,6 @@ class ShipSelector extends React.Component {
         this.setState({
           ships: [ ...res.data ],
         });
-        if (this.state.ships) {
-          this.shipSelected(this.state.ships[0])
-        }
       })
       .catch(console.error);
   }

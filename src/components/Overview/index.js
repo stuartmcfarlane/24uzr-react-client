@@ -14,7 +14,8 @@ class Overview extends React.Component {
       hoveredBouy: null,
       startBouy: null,
       endBouy: null,
-      route: null
+      routes: [],
+      route: null,
     };
   }
   shipSelected = (ship) => {
@@ -36,7 +37,16 @@ class Overview extends React.Component {
     this.setState({
       route: route
     })
-
+  }
+  setRoutes = (routes) => {
+    this.setState({
+      routes: routes,
+      route: routes[0]
+    })
+  }
+  onRoute = (startBouy, endBouy) => {
+      axios.get(`http://localhost:3001/api/routes?start=${startBouy._id}&end=${endBouy._id}`)
+        .then((res) => this.setRoutes(res.data.paths))
   }
   setStartBouy = (bouy) => {
     if (!bouy) {
@@ -48,8 +58,7 @@ class Overview extends React.Component {
     })
     const { endBouy } = this.state;
     if (bouy && endBouy) {
-      axios.get(`http://localhost:3001/api/routes?start=${bouy._id}&end=${endBouy._id}`)
-        .then((res) => this.setRoute(res.data.path))
+      this.onRoute(bouy, endBouy)
     }
   }
   setEndBouy = (bouy) => {
@@ -62,19 +71,23 @@ class Overview extends React.Component {
     });
     const { startBouy } = this.state;
     if (startBouy && bouy) {
-      axios.get(`http://localhost:3001/api/routes?start=${startBouy._id}&end=${bouy._id}`)
-        .then((res) => this.setRoute(res.data.path))
+      this.onRoute(startBouy, bouy)
     }
+  }
+  onSelectShip = (e) => {
+    this.setState({
+      ship: null
+    })
   }
   render() {
     return (
       <div className="Overview" style={overviewStyle}>
         <div className="side-panel" style={sidePanelStyle}>
           {this.state.ship
-            ? <React.Fragment>
-                <ShipSelector ships={this.state.ships} shipSelected={this.shipSelected}/>
+            ? <div>
                 <Ship ship={this.state.ship} />
-              </React.Fragment>
+                <button onClick={this.onSelectShip}>Select other ship</button>
+              </div>
             : <ShipSelector ships={this.state.ships} shipSelected={this.shipSelected}/>
           }
           <div className="row">
