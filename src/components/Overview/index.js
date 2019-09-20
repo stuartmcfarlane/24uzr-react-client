@@ -3,6 +3,7 @@ import ShipSelector from '../ShipSelector';
 import Ship from '../Ship';
 import Map from '../Map';
 import Route from '../Route';
+import RouteSelector from '../RouteSelector';
 
 import axios from 'axios';
 
@@ -20,6 +21,7 @@ class Overview extends React.Component {
       endBouy: null,
       routes: [],
       route: null,
+      routeHighlighted: null
     };
   }
   componentDidMount() {
@@ -68,12 +70,12 @@ class Overview extends React.Component {
                 : null;
     return route
   }
-  setRoute = (path) => {
+  setRoute = (route) => {
     this.setState({
-      route: this.path2route(path)
+      route: route
     })
   }
-  setRoutes = (paths) => {
+  onPathsFromApi = (paths) => {
     const routes = paths.map( path => this.path2route(path));
     this.setState({
       routes: routes,
@@ -82,7 +84,7 @@ class Overview extends React.Component {
   }
   onRoute = (startBouy, endBouy) => {
       axios.get(`http://localhost:3001/api/routes?start=${startBouy._id}&end=${endBouy._id}`)
-        .then((res) => this.setRoutes(res.data.paths))
+        .then((res) => this.onPathsFromApi(res.data.paths))
   }
   setStartBouy = (bouy) => {
     if (!bouy) {
@@ -115,6 +117,11 @@ class Overview extends React.Component {
       ship: null
     })
   }
+  routeHovered = (route) => {
+    this.setState({
+      routeHighlighted: route
+    })
+  }
   render() {
     const map = this.state.legs && this.state.bouysById
               ? <Map bouys={this.state.bouys}
@@ -124,9 +131,17 @@ class Overview extends React.Component {
                   bouyHovered={this.bouyHovered}
                   startBouy={this.state.startBouy}
                   endBouy={this.state.endBouy}
-                  route={this.state.route}
+                  route={this.state.route || this.state.routeHighlighted}
                   />
               : 'Loading map';
+    const route = this.state.route
+                ? <div>
+                    <button onClick={this.setRoute.bind(this, null)}>Select other root</button>
+                    <Route route={this.state.route} />
+                  </div>
+                : <RouteSelector routes={this.state.routes}
+                                 routeSelected={this.setRoute} 
+                                 routeHovered={this.routeHovered}/>
 
     return (
       <div className="Overview" style={overviewStyle}>
@@ -187,7 +202,7 @@ class Overview extends React.Component {
           {map}
         </div>
         <div className="right-panel" style={rightPanelStyle}>
-          <Route route={this.state.route} />
+          {route}
         </div>
       </div>
     );
