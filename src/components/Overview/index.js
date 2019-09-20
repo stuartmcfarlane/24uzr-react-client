@@ -2,6 +2,7 @@ import React from 'react';
 import ShipSelector from '../ShipSelector';
 import Ship from '../Ship';
 import Map from '../Map';
+import Route from '../Route';
 
 import axios from 'axios';
 
@@ -143,7 +144,9 @@ class Overview extends React.Component {
                route={this.state.route}
                />
         </div>
-        
+        <div className="right-panel" style={rightPanelStyle}>
+          <Route route={this.state.route} />
+        </div>
       </div>
     );
   }
@@ -156,7 +159,7 @@ const overviewStyle = {
 const sidePanelStyle = {
   display: 'block',
   float: 'left',
-  width: '20%',
+  width: '15%',
   height: '100%',
   borderRight: '1px dotted #aaa',
 };
@@ -164,7 +167,15 @@ const sidePanelStyle = {
 const mainPanelStyle = {
   display: 'block',
   float: 'left',
-  width: '80%',
+  width: '70%',
+  height: '100%',
+  borderRight: '1px dotted #aaa',
+};
+
+const rightPanelStyle = {
+  display: 'block',
+  float: 'left',
+  width: '15%',
   height: '100%',
 };
 
