@@ -12,12 +12,36 @@ class Overview extends React.Component {
     this.state = {
       ship: null,
       selectedBouy: null,
+      legs: [],
+      bouys: [],
+      bouysById: {},
       hoveredBouy: null,
       startBouy: null,
       endBouy: null,
       routes: [],
       route: null,
     };
+  }
+  componentDidMount() {
+    axios
+      .get('http://localhost:3001/api/bouys')
+      .then((res) => {
+        const bouys = [ ...res.data ];
+
+        this.setState({
+          bouys,
+          bouysById: res.data.reduce((bouysById, bouy) => {
+            bouysById[bouy._id] = bouy; return bouysById;
+          }, {}),
+        });
+      })
+      .then(() => axios.get('http://localhost:3001/api/legs'))
+      .then((res) => {
+        this.setState({
+          legs: [ ...res.data ],
+        });
+      })
+      .catch(console.error);
   }
   shipSelected = (ship) => {
     this.setState({
@@ -81,6 +105,18 @@ class Overview extends React.Component {
     })
   }
   render() {
+    const map = this.state.legs && this.state.bouysById
+              ? <Map bouys={this.state.bouys}
+                  bouysById={this.state.bouysById}
+                  legs={this.state.legs}
+                  bouySelected={this.bouySelected}
+                  bouyHovered={this.bouyHovered}
+                  startBouy={this.state.startBouy}
+                  endBouy={this.state.endBouy}
+                  route={this.state.route}
+                  />
+              : 'Loading map';
+
     return (
       <div className="Overview" style={overviewStyle}>
         <div className="side-panel" style={sidePanelStyle}>
@@ -137,12 +173,7 @@ class Overview extends React.Component {
           </div>
         </div>
         <div className="main-panel" style={mainPanelStyle}>
-          <Map bouySelected={this.bouySelected}
-               bouyHovered={this.bouyHovered}
-               startBouy={this.state.startBouy}
-               endBouy={this.state.endBouy}
-               route={this.state.route}
-               />
+          {map}
         </div>
         <div className="right-panel" style={rightPanelStyle}>
           <Route route={this.state.route} />

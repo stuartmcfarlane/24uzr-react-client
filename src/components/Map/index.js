@@ -1,5 +1,4 @@
 import React from 'react';
-import axios from 'axios';
 
 class Map extends React.Component {
   constructor(props) {
@@ -7,45 +6,17 @@ class Map extends React.Component {
     this.state = {
       boundingBox: {},
       viewBox: {},
-      legs: [],
-      bouys: [],
-      bouysById: {},
     };
   }
-  componentDidMount() {
-    axios
-      .get('http://localhost:3001/api/bouys')
-      .then((res) => {
-        const bouys = [ ...res.data ];
-        const boundingBox = getBoundingBox(bouys);
-        const viewBox = getViewBox(boundingBox, getRadius(boundingBox));
-
-        this.setState({
-          boundingBox,
-          viewBox,
-          bouys,
-          bouysById: res.data.reduce((bouysById, bouy) => {
-            bouysById[bouy._id] = bouy; return bouysById;
-          }, {}),
-        });
-      })
-      .then(() => axios.get('http://localhost:3001/api/legs'))
-      .then((res) => {
-        this.setState({
-          legs: [ ...res.data ],
-        });
-      })
-      .catch(console.error);
-  }
-
   render() {
     const {
-      boundingBox,
-      viewBox,
       bouys,
       legs,
       bouysById
-    } = this.state;
+    } = this.props;
+    const boundingBox = getBoundingBox(bouys);
+    const viewBox = getViewBox(boundingBox, getRadius(boundingBox));
+
     const { startBouy, endBouy } = this.props;
     if (!bouys.length) return 'loadng...';
     const radius = getRadius(boundingBox);
@@ -94,7 +65,7 @@ class Map extends React.Component {
                      fill="none"
                      d={
                        'M' + this.props.route
-                         .map(id => this.state.bouysById[id])
+                         .map(id => this.props.bouysById[id])
                          .map(bouy => {
                            const { x, y } = loc2svg(bouy.location);
                            return `${x}, ${y}`;
