@@ -17,16 +17,18 @@ class Map extends React.Component {
     const boundingBox = getBoundingBox(bouys);
     const viewBox = getViewBox(boundingBox, getRadius(boundingBox));
 
-    const { startBouy, endBouy } = this.props;
+    const { startBouy, endBouy, highlightBouy } = this.props;
     if (!bouys.length) return 'loadng...';
     const radius = getRadius(boundingBox);
     const circleStrokeWidth = radius / 5;
     const bouyCircles = (bouys || []).map( bouy => {
       const c = loc2svg(bouy.location);
-      const fill = startBouy && bouy._id === startBouy._id
-                 ? 'green'
+      const fill = highlightBouy && bouy._id === highlightBouy._id
+                 ? 'blue'
                  : endBouy && bouy._id === endBouy._id
                  ? 'red'
+                 : startBouy && bouy._id === startBouy._id
+                 ? 'green'
                  : 'white';
       return (
         <circle key={bouy._id}

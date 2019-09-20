@@ -132,12 +132,13 @@ class Overview extends React.Component {
                   startBouy={this.state.startBouy}
                   endBouy={this.state.endBouy}
                   route={this.state.route || this.state.routeHighlighted}
+                  highlightBouy={this.state.hoveredBouy}
                   />
               : 'Loading map';
     const route = this.state.route
                 ? <div>
                     <button onClick={this.setRoute.bind(this, null)}>Select other root</button>
-                    <Route route={this.state.route} />
+                    <Route route={this.state.route} bouyHovered={this.bouyHovered}/>
                   </div>
                 : <RouteSelector routes={this.state.routes}
                                  routeSelected={this.setRoute} 
