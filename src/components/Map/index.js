@@ -64,8 +64,7 @@ class Map extends React.Component {
                      strokeWidth={lineWidth}
                      fill="none"
                      d={
-                       'M' + this.props.route
-                         .map(id => this.props.bouysById[id])
+                       'M' + this.props.route.path
                          .map(bouy => {
                            const { x, y } = loc2svg(bouy.location);
                            return `${x}, ${y}`;

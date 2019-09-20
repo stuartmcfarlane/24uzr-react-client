@@ -1,21 +1,23 @@
 import React from 'react';
 
 function Route(props) {
+    const bouys = props.route
+                ? props.route.path.map( bouy => {
+                    return (
+                        <li style={listItemStyle}>
+                            <div style={labelStyle}>{bouy.name}</div>
+                        </li>
+
+                    )
+                })
+                : 'Select start and end bouys'
+
     return (
         <div className="Route" style={routeStyle}>
             <h2>Route</h2>
-            {
-            // <ul style={listStyle}>
-            //     <li style={listItemStyle}>
-            //         <div style={labelStyle}>Type</div>
-            //         <div style={dataStyle}>{props.route.type}</div>
-            //     </li>
-            //     <li style={listItemStyle}>
-            //         <div style={labelStyle}>ORC</div>
-            //         <div style={dataStyle}>{props.route.orcRating}</div>
-            //     </li>
-            // </ul>
-            }
+            <ul style={listStyle}>
+                {bouys}
+            </ul>
         </div>
     );
 }

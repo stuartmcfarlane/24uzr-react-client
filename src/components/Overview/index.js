@@ -58,12 +58,23 @@ class Overview extends React.Component {
       hoveredBouy: bouy
     })
   }
-  setRoute = (route) => {
+  path2route = (path) => {
+    const route = path && path.length
+                ? {
+                    start: this.state.bouysById[path[0]],
+                    end: this.state.bouysById[path[path.length - 1]],
+                    path: path.map( bouyId => this.state.bouysById[bouyId]),
+                  }
+                : null;
+    return route
+  }
+  setRoute = (path) => {
     this.setState({
-      route: route
+      route: this.path2route(path)
     })
   }
-  setRoutes = (routes) => {
+  setRoutes = (paths) => {
+    const routes = paths.map( path => this.path2route(path));
     this.setState({
       routes: routes,
       route: routes[0]
@@ -208,6 +219,7 @@ const rightPanelStyle = {
   float: 'left',
   width: '15%',
   height: '100%',
+  overflowY: 'auto',
 };
 
 const bouyStyle = {
