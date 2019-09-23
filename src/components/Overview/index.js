@@ -11,6 +11,8 @@ class Overview extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      maps: [],
+      selectedMap: null,
       ship: null,
       selectedBouy: null,
       legs: [],
@@ -25,11 +27,23 @@ class Overview extends React.Component {
     };
   }
   componentDidMount() {
+    let mapId;
     axios
-      .get('http://localhost:3001/api/bouys')
+      .get('http://localhost:3001/api/maps')
+      .then((res) => {
+        const maps = [...res.data];
+        // const selectedMap = maps.filter( map => map.name === 'simple graph' )[0]
+        const selectedMap = maps.filter( map => map.name === '24uzr-2016' )[0]
+        mapId = selectedMap._id
+        this.setState({
+          maps,
+          selectedMap
+        })
+      })
+      .then( () => axios.get(`http://localhost:3001/api/bouys?mapId=${mapId}`) )
       .then((res) => {
         const bouys = [ ...res.data ];
-
+        console.log(res.data)
         this.setState({
           bouys,
           bouysById: res.data.reduce((bouysById, bouy) => {
@@ -37,8 +51,9 @@ class Overview extends React.Component {
           }, {}),
         });
       })
-      .then(() => axios.get('http://localhost:3001/api/legs'))
+      .then(() => axios.get(`http://localhost:3001/api/legs?mapId=${mapId}`))
       .then((res) => {
+        console.log(res.data)
         this.setState({
           legs: [ ...res.data ],
         });
@@ -83,7 +98,7 @@ class Overview extends React.Component {
     })
   }
   onRoute = (startBouy, endBouy) => {
-      axios.get(`http://localhost:3001/api/routes?start=${startBouy._id}&end=${endBouy._id}`)
+      axios.get(`http://localhost:3001/api/routes?mapId=${this.state.selectedMap._id}&start=${startBouy._id}&end=${endBouy._id}`)
         .then((res) => this.onPathsFromApi(res.data.paths))
   }
   setStartBouy = (bouy) => {

@@ -12,7 +12,7 @@ class Route extends React.Component {
                                 onMouseEnter={this.props.bouyHovered.bind(this, bouy)}
                                 onMouseLeave={this.props.bouyHovered.bind(this, null)}
                             >
-                                <div style={labelStyle}>{bouy.name}</div>
+                                <div style={labelStyle}>{i?i:''} {bouy.name}</div>
                             </li>
 
                         )
