@@ -1,5 +1,7 @@
 import React from 'react';
 
+const nmPerMetre = 0.000539957;
+
 class RouteSelector extends React.Component {
   constructor(props) {
     super(props);
@@ -14,18 +16,25 @@ class RouteSelector extends React.Component {
     this.props.routeHovered(route)
   }
   render() {
+    console.log(this.props)
     return (
       <div className="RouteSelector" style={routeSelectorStyle}>
         <h2>Select a route</h2>
         <ul style={routeListStyle}>
           {
             this.props.routes.map(
-              (route, i) => <li key={i}
+              (route, i) => {
+                const { start, end, length } = route;
+                const nMiles = (route.length * nmPerMetre).toFixed(2);
+                return (
+                  <li key={i}
                             onClick={this.routeSelected.bind(this, route)}
                             style={routeStyle}
                             onMouseEnter={this.props.routeHovered.bind(this, route)}
                             onMouseLeave={this.props.routeHovered.bind(this, null)}
-                        >{route.start.name} - {route.end.name}</li>
+                        >{route.start.name} - {route.end.name} : {nMiles}</li>
+                )
+              }
             )
           }
         </ul>

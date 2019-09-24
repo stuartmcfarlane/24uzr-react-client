@@ -1,10 +1,13 @@
 import React from 'react';
 
+const nmPerMetre = 0.000539957;
+
 class Route extends React.Component {
   bouyHovered = (bouy) => {
     this.props.bouyHovered(bouy)
   }
     render() {
+        const nMiles = (this.props.route.length * nmPerMetre).toFixed(2);
         const bouys = this.props.route
                     ? this.props.route.path.map( (bouy, i) => {
                         return (
@@ -22,6 +25,7 @@ class Route extends React.Component {
         return (
             <div className="Route" style={routeStyle}>
                 <h2>Route</h2>
+                <h3>Length {nMiles}</h3>
                 <ul style={listStyle}>
                     {bouys}
                 </ul>

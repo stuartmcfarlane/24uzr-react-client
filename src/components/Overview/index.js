@@ -78,9 +78,10 @@ class Overview extends React.Component {
   path2route = (path) => {
     const route = path && path.length
                 ? {
-                    start: this.state.bouysById[path[0]],
-                    end: this.state.bouysById[path[path.length - 1]],
-                    path: path.map( bouyId => this.state.bouysById[bouyId]),
+                    start: this.state.bouysById[path.bouys[0]],
+                    end: this.state.bouysById[path.bouys[path.bouys.length - 1]],
+                    length: path.length,
+                    path: path.bouys.map( bouyId => this.state.bouysById[bouyId]),
                   }
                 : null;
     return route
@@ -91,7 +92,9 @@ class Overview extends React.Component {
     })
   }
   onPathsFromApi = (paths) => {
+    console.log('paths from api', paths)
     const routes = paths.map( path => this.path2route(path));
+    console.log('into routes', routes)
     this.setState({
       routes: routes,
       route: routes[0]
@@ -138,6 +141,7 @@ class Overview extends React.Component {
     })
   }
   render() {
+    console.log('routes', this.state.routes)
     const map = this.state.legs && this.state.bouysById
               ? <Map bouys={this.state.bouys}
                   bouysById={this.state.bouysById}
