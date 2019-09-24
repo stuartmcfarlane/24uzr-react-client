@@ -43,7 +43,6 @@ class Overview extends React.Component {
       .then( () => axios.get(`http://localhost:3001/api/bouys?mapId=${mapId}`) )
       .then((res) => {
         const bouys = [ ...res.data ];
-        console.log(res.data)
         this.setState({
           bouys,
           bouysById: res.data.reduce((bouysById, bouy) => {
@@ -61,9 +60,11 @@ class Overview extends React.Component {
       .catch(console.error);
   }
   shipSelected = (ship) => {
+    console.log('ship selected', ship)
     this.setState({
       ship: ship
     })
+    this.onRoute(this.state.startBouy, this.state.endBouy, ship);
   }
   bouySelected = (bouy) => {
     this.setState({
@@ -100,9 +101,11 @@ class Overview extends React.Component {
       route: routes[0]
     })
   }
-  onRoute = (startBouy, endBouy) => {
-      axios.get(`http://localhost:3001/api/routes?shipId=${this.state.ship._id}&mapId=${this.state.selectedMap._id}&start=${startBouy._id}&end=${endBouy._id}`)
+  onRoute = (startBouy, endBouy, ship) => {
+    if (ship && startBouy && endBouy) {
+      axios.get(`http://localhost:3001/api/routes?shipId=${ship._id}&mapId=${this.state.selectedMap._id}&start=${startBouy._id}&end=${endBouy._id}`)
         .then((res) => this.onPathsFromApi(res.data.paths))
+    }
   }
   setStartBouy = (bouy) => {
     if (!bouy) {
@@ -112,9 +115,9 @@ class Overview extends React.Component {
       selectedBouy: null,
       startBouy: bouy
     })
-    const { endBouy } = this.state;
+    const { endBouy, ship } = this.state;
     if (bouy && endBouy) {
-      this.onRoute(bouy, endBouy)
+      this.onRoute(bouy, endBouy, ship)
     }
   }
   setEndBouy = (bouy) => {
@@ -125,15 +128,16 @@ class Overview extends React.Component {
       selectedBouy: null,
       endBouy: bouy
     });
-    const { startBouy } = this.state;
+    const { startBouy, ship } = this.state;
     if (startBouy && bouy) {
-      this.onRoute(startBouy, bouy)
+      this.onRoute(startBouy, bouy, ship)
     }
   }
   onSelectShip = (ship) => {
     this.setState({
       ship: null
     })
+    this.onRoute(this.state.startBouy, this.state.endBouy, null)
   }
   routeHovered = (route) => {
     this.setState({
