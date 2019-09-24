@@ -101,7 +101,7 @@ class Overview extends React.Component {
     })
   }
   onRoute = (startBouy, endBouy) => {
-      axios.get(`http://localhost:3001/api/routes?mapId=${this.state.selectedMap._id}&start=${startBouy._id}&end=${endBouy._id}`)
+      axios.get(`http://localhost:3001/api/routes?shipId=${this.state.ship}&mapId=${this.state.selectedMap._id}&start=${startBouy._id}&end=${endBouy._id}`)
         .then((res) => this.onPathsFromApi(res.data.paths))
   }
   setStartBouy = (bouy) => {
