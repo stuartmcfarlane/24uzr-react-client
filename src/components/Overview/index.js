@@ -23,7 +23,11 @@ class Overview extends React.Component {
       endBouy: null,
       routes: [],
       route: null,
-      routeHighlighted: null
+      routeHighlighted: null,
+      wind: {
+        degrees: 45,
+        knots: 3
+      },
     };
   }
   componentDidMount() {
@@ -52,7 +56,6 @@ class Overview extends React.Component {
       })
       .then(() => axios.get(`http://localhost:3001/api/legs?mapId=${mapId}`))
       .then((res) => {
-        console.log(res.data)
         this.setState({
           legs: [ ...res.data ],
         });
@@ -60,11 +63,11 @@ class Overview extends React.Component {
       .catch(console.error);
   }
   shipSelected = (ship) => {
-    console.log('ship selected', ship)
     this.setState({
       ship: ship
     })
-    this.onRoute(this.state.startBouy, this.state.endBouy, ship);
+    const { startBouy, endBouy, wind } = this.state;
+    this.onRoute(startBouy, endBouy, ship, wind);
   }
   bouySelected = (bouy) => {
     this.setState({
@@ -82,6 +85,7 @@ class Overview extends React.Component {
                     start: this.state.bouysById[path.bouys[0]],
                     end: this.state.bouysById[path.bouys[path.bouys.length - 1]],
                     length: path.length,
+                    seconds: path.seconds,
                     path: path.bouys.map( bouyId => this.state.bouysById[bouyId]),
                   }
                 : null;
@@ -93,17 +97,27 @@ class Overview extends React.Component {
     })
   }
   onPathsFromApi = (paths) => {
-    console.log('paths from api', paths)
     const routes = paths.map( path => this.path2route(path));
-    console.log('into routes', routes)
     this.setState({
       routes: routes,
       route: routes[0]
     })
   }
-  onRoute = (startBouy, endBouy, ship) => {
-    if (ship && startBouy && endBouy) {
-      axios.get(`http://localhost:3001/api/routes?shipId=${ship._id}&mapId=${this.state.selectedMap._id}&start=${startBouy._id}&end=${endBouy._id}`)
+  onRoute = (startBouy, endBouy, ship, wind) => {
+    this.setState({
+      routes: [],
+      route: null,
+    })
+    if (ship && startBouy && endBouy && wind) {
+      axios
+        .get(makeRoute('http://localhost:3001/api/routes', {
+          shipId:ship._id,
+          mapId:this.state.selectedMap._id,
+          start:startBouy._id,
+          end:endBouy._id,
+          windDegrees: wind.degrees,
+          windKnots: wind.knots,
+        }))
         .then((res) => this.onPathsFromApi(res.data.paths))
     }
   }
@@ -115,9 +129,9 @@ class Overview extends React.Component {
       selectedBouy: null,
       startBouy: bouy
     })
-    const { endBouy, ship } = this.state;
+    const { endBouy, ship, wind } = this.state;
     if (bouy && endBouy) {
-      this.onRoute(bouy, endBouy, ship)
+      this.onRoute(bouy, endBouy, ship, wind)
     }
   }
   setEndBouy = (bouy) => {
@@ -128,24 +142,45 @@ class Overview extends React.Component {
       selectedBouy: null,
       endBouy: bouy
     });
-    const { startBouy, ship } = this.state;
+    const { startBouy, ship, wind } = this.state;
     if (startBouy && bouy) {
-      this.onRoute(startBouy, bouy, ship)
+      this.onRoute(startBouy, bouy, ship, wind)
     }
   }
   onSelectShip = (ship) => {
+    const { startBouy, endBouy, wind } = this.state;
     this.setState({
       ship: null
     })
-    this.onRoute(this.state.startBouy, this.state.endBouy, null)
+    this.onRoute(startBouy, endBouy, null, wind)
   }
   routeHovered = (route) => {
     this.setState({
       routeHighlighted: route
     })
   }
+  onWindDirection = (ev) => {
+    this.setState({
+      wind: {
+        knots: this.state.wind && this.state.wind.knots,
+        degrees: ev.target.value,
+      }
+    })
+  }
+  onWindSpeed = (ev) => {
+    this.setState({
+      wind: {
+        knots: ev.target.value,
+        degrees: this.state.wind && this.state.wind.degrees,
+      }
+    })
+  }
+  onWindUpdated = (ev) => {
+    ev.preventDefault();
+    const { startBouy, endBouy, ship, wind } = this.state;
+    this.onRoute(startBouy, endBouy, ship, wind);
+  }
   render() {
-    console.log('routes', this.state.routes)
     const map = this.state.legs && this.state.bouysById
               ? <Map bouys={this.state.bouys}
                   bouysById={this.state.bouysById}
@@ -156,6 +191,7 @@ class Overview extends React.Component {
                   endBouy={this.state.endBouy}
                   route={this.state.route || this.state.routeHighlighted}
                   highlightBouy={this.state.hoveredBouy}
+                  wind={this.state.wind}
                   />
               : 'Loading map';
     const route = this.state.route
@@ -163,10 +199,30 @@ class Overview extends React.Component {
                     <button onClick={this.setRoute.bind(this, null)}>Select other root</button>
                     <Route route={this.state.route} bouyHovered={this.bouyHovered}/>
                   </div>
-                : <RouteSelector routes={this.state.routes}
+                : this.state.routes && this.state.routes.length
+                ? <RouteSelector routes={this.state.routes}
                                  routeSelected={this.setRoute} 
                                  routeHovered={this.routeHovered}/>
-
+                : '';
+    const windSelector = (
+      <form onSubmit={this.onWindUpdated}>
+        <h2>Wind</h2>
+        <label>
+          Direction
+          <input type="number"
+                 value={this.state.wind.degrees}
+                 onChange={this.onWindDirection}
+                 />
+        </label>
+        <label>Speed
+          <input type="number"
+                 value={this.state.wind.knots}
+                 onChange={this.onWindSpeed}
+                 />
+        </label>
+        <button>Reroute</button>
+      </form>
+    )
     return (
       <div className="Overview" style={overviewStyle}>
         <div className="side-panel" style={sidePanelStyle}>
@@ -177,6 +233,7 @@ class Overview extends React.Component {
               </div>
             : <ShipSelector ships={this.state.ships} shipSelected={this.shipSelected}/>
           }
+          {windSelector}
           <div className="row">
             {this.state.startBouy
                 ? <div style={bouyStyle}>
@@ -266,5 +323,13 @@ const bouyStyle = {
   width: '50%',
   float: 'left'
 };
+
+function makeRoute(url, query) {
+  const qs = Object.keys(query || {})
+    .filter(k => query[k] !== null && query[k] !== undefined)
+    .map(k => `${k}=${query[k]}`)
+    .join('&');
+  return `${url}${qs.length ? '?' : ''}${qs}`;
+}
 
 export default Overview;

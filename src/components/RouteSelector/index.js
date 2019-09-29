@@ -1,4 +1,5 @@
 import React from 'react';
+import prettyMs from 'pretty-ms';
 
 const nmPerMetre = 0.000539957;
 
@@ -26,13 +27,14 @@ class RouteSelector extends React.Component {
               (route, i) => {
                 const { start, end, length } = route;
                 const nMiles = (route.length * nmPerMetre).toFixed(2);
+                const nTime = humanTime(route.seconds);
                 return (
                   <li key={i}
                             onClick={this.routeSelected.bind(this, route)}
                             style={routeStyle}
                             onMouseEnter={this.props.routeHovered.bind(this, route)}
                             onMouseLeave={this.props.routeHovered.bind(this, null)}
-                        >{route.start.name} - {route.end.name} : {nMiles}</li>
+                        >{route.start.name} - {route.end.name} : {nMiles} nM {nTime}</li>
                 )
               }
             )
@@ -41,6 +43,14 @@ class RouteSelector extends React.Component {
       </div>
     );
   }
+}
+
+function humanTime(s) {
+    if (!Number(s)) return '-';
+    return prettyMs(s * 1000, {
+        millisecondsDecimalDigits: 0,
+        secondsDecimalDigits: 0,
+    });
 }
 
 const routeSelectorStyle = {

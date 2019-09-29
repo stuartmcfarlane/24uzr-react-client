@@ -1,13 +1,23 @@
 import React from 'react';
+import prettyMs from 'pretty-ms';
 
 const nmPerMetre = 0.000539957;
 
+function humanTime(s) {
+    if (!Number(s)) return '-';
+    return prettyMs(s * 1000, {
+        millisecondsDecimalDigits: 0,
+        secondsDecimalDigits: 0,
+    });
+}
 class Route extends React.Component {
   bouyHovered = (bouy) => {
     this.props.bouyHovered(bouy)
   }
     render() {
+        console.log('route', this.props.route)
         const nMiles = (this.props.route.length * nmPerMetre).toFixed(2);
+        const nTime = humanTime(this.props.route.seconds);
         const bouys = this.props.route
                     ? this.props.route.path.map( (bouy, i) => {
                         return (
@@ -25,7 +35,8 @@ class Route extends React.Component {
         return (
             <div className="Route" style={routeStyle}>
                 <h2>Route</h2>
-                <h3>Length {nMiles}</h3>
+                <p>{nMiles} nM</p>
+                <p>{nTime}</p>
                 <ul style={listStyle}>
                     {bouys}
                 </ul>

@@ -1,4 +1,7 @@
 import React from 'react';
+import WindOverlay from './WindOverlay';
+
+import {loc2svg, box2svg} from '../../utils/loc2svg';
 
 class Map extends React.Component {
   constructor(props) {
@@ -74,15 +77,21 @@ class Map extends React.Component {
                      }
                 />
                 : '';
+    const windOverlay = (
+      <WindOverlay boundingBox={box2svg(boundingBox)}
+                   wind={this.props.wind}
+      />
+    );
     const transform=`scale(1,1)`;
     const svg = (
       <svg style={svgStyle}
            viewBox={viewBox}>
-        <g transform={transform}>
+        {windOverlay}
+        <g id="route" transform={transform}>
           {legLines}
           {bouyCircles}
-          {route}
         </g>
+        {route}
       </svg>
     );
 
@@ -94,13 +103,9 @@ class Map extends React.Component {
   }
 }
 
-const loc2svg = (loc) => {
-  return {
-    x: loc.lon,
-    y: -1 * loc.lat,
-  }
+const makeWindVector = (viewBox, wind) => {
+  return '';
 }
-
 const getBoundingBox = (bouys) => {
   return bouys.reduce((boundingBox, bouy) => {
     return {
