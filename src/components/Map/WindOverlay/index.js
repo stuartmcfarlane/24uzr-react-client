@@ -11,7 +11,7 @@ class WindOverlay extends React.Component {
     const lineWidth = (boundingBox.right - boundingBox.left) / 800;
     const arrows = makeGrid(boundingBox, arrowCount, arrowCount)
       .map(makeArrow.bind(null, wind))
-      .map(line2svg.bind(null, 'green', lineWidth));
+      .map(line2windArrow.bind(null, '#aaa', lineWidth));
 
     return (
       <g id="windOverlay">
@@ -21,15 +21,35 @@ class WindOverlay extends React.Component {
   }
 }
 
-function line2svg(stroke, lineWidth, line, key) {
+function line2windArrow(color, lineWidth, line, key) {
+  return (
+    <React.Fragment>
+      {point2circle(color, lineWidth * 2, { x: line.x1, y: line.y1})}
+      {line2svg(color, lineWidth, line, key)}
+    </React.Fragment>
+  )
+}
+
+function line2svg(color, lineWidth, line, key) {
   return (
     <line key={key}
           x1={line.x1}
           y1={line.y1}
           x2={line.x2}
           y2={line.y2}
-          stroke={stroke}
+          stroke={color}
           strokeWidth={lineWidth}
+    />
+  )  
+}
+
+function point2circle(color, radius, point, key) {
+  return (
+    <circle key={key}
+            cx={point.x}
+            cy={point.y}
+            r={radius}
+            fill={color}
     />
   )  
 }
