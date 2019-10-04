@@ -21,6 +21,7 @@ const mapDispatchToProps = dispatch => ({
   setSelectedMap: map => dispatch(ACTIONS.setSelectedMap(map)),
   setBouys: bouys => dispatch(ACTIONS.setBouys(bouys)),
   setLegs: legs => dispatch(ACTIONS.setLegs(legs)),
+  shipSelected: ship => dispatch(ACTIONS.shipSelected(ship)),
 });
 
 class Overview extends React.Component {
@@ -72,9 +73,7 @@ class Overview extends React.Component {
       .catch(console.error);
   }
   shipSelected = (ship) => {
-    this.setState({
-      ship: ship
-    })
+    this.props.shipSelected(ship)
     const { startBouy, endBouy, wind } = this.state;
     this.onRoute(startBouy, endBouy, ship, wind);
   }
@@ -121,7 +120,7 @@ class Overview extends React.Component {
       axios
         .get(makeRoute('http://localhost:3001/api/routes', {
           shipId:ship._id,
-          mapId:this.state.selectedMap._id,
+          mapId:this.props.selectedMap._id,
           start:startBouy._id,
           end:endBouy._id,
           windDegrees: wind.degrees,
@@ -138,7 +137,8 @@ class Overview extends React.Component {
       selectedBouy: null,
       startBouy: bouy
     })
-    const { endBouy, ship, wind } = this.state;
+    const { endBouy, wind } = this.state;
+    const { ship } = this.props;
     if (bouy && endBouy) {
       this.onRoute(bouy, endBouy, ship, wind)
     }
@@ -151,7 +151,8 @@ class Overview extends React.Component {
       selectedBouy: null,
       endBouy: bouy
     });
-    const { startBouy, ship, wind } = this.state;
+    const { startBouy, wind } = this.state;
+    const { ship } = this.props;
     if (startBouy && bouy) {
       this.onRoute(startBouy, bouy, ship, wind)
     }
@@ -186,7 +187,8 @@ class Overview extends React.Component {
   }
   onWindUpdated = (ev) => {
     ev.preventDefault();
-    const { startBouy, endBouy, ship, wind } = this.state;
+    const { startBouy, endBouy, wind } = this.state;
+    const { ship } = this.props;
     this.onRoute(startBouy, endBouy, ship, wind);
   }
   render() {
@@ -235,12 +237,12 @@ class Overview extends React.Component {
     return (
       <div className="Overview" style={overviewStyle}>
         <div className="side-panel" style={sidePanelStyle}>
-          {this.state.ship
+          {this.props.ship
             ? <div>
-                <Ship ship={this.state.ship} />
+                <Ship ship={this.props.ship} />
                 <button onClick={this.onSelectShip}>Select other ship</button>
               </div>
-            : <ShipSelector ships={this.state.ships} shipSelected={this.shipSelected}/>
+            : <ShipSelector ships={this.props.ships} shipSelected={this.shipSelected}/>
           }
           {windSelector}
           <div className="row">

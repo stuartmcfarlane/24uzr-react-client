@@ -48,6 +48,15 @@ const overviewReducer = (state = defaultState, action) => {
         return newState;
     }
 
+    case ACTIONS.Types.SHIP_SELECTED: {
+        const ship = action.payload;
+        const newState = {
+            ...state,
+            ship,
+        };
+        return newState;
+    }
+
     default:
       return state;
   }

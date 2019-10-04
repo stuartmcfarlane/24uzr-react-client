@@ -3,6 +3,7 @@ const Types = {
     SET_SELECTED_MAP: "SET_SELECTED_MAP",
     SET_BOUYS: "SET_BOUYS",
     SET_LEGS: "SET_LEGS",
+    SHIP_SELECTED: "SHIP_SELECTED",
   };
   
   // actions
@@ -26,11 +27,17 @@ const setLegs = legs => ({
     payload: legs
 });
   
+const shipSelected = ship => ({
+    type: Types.SHIP_SELECTED,
+    payload: ship
+});
+  
 export default {
     setMaps,
     setSelectedMap,
     setBouys,
     setLegs,
+    shipSelected,
     Types
 };
   
