@@ -26,6 +26,20 @@ const overviewReducer = (state = defaultState, action) => {
       return newState;
     }
 
+    case ACTIONS.Types.SET_BOUYS: {
+        const bouys = action.payload;
+        console.log('reduce bouys', bouys);
+        const newState = {
+            ...state,
+            bouys,
+            bouysById: bouys.reduce((bouysById, bouy) => {
+                bouysById[bouy._id] = bouy; return bouysById;
+              }, {}),
+            };
+        console.log('reduce bouys state', newState);
+        return newState;
+    }
+
     default:
       return state;
   }

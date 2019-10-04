@@ -19,6 +19,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   setMaps: maps => dispatch(ACTIONS.setMaps(maps)),
   setSelectedMap: map => dispatch(ACTIONS.setSelectedMap(map)),
+  setBouys: bouys => dispatch(ACTIONS.setBouys(bouys)),
 });
 
 class Overview extends React.Component {
@@ -60,12 +61,7 @@ class Overview extends React.Component {
       .then( () => axios.get(`http://localhost:3001/api/bouys?mapId=${mapId}`) )
       .then((res) => {
         const bouys = [ ...res.data ];
-        this.setState({
-          bouys,
-          bouysById: res.data.reduce((bouysById, bouy) => {
-            bouysById[bouy._id] = bouy; return bouysById;
-          }, {}),
-        });
+        this.props.setBouys(bouys)
       })
       .then(() => axios.get(`http://localhost:3001/api/legs?mapId=${mapId}`))
       .then((res) => {
@@ -95,11 +91,11 @@ class Overview extends React.Component {
   path2route = (path) => {
     const route = path && path.length
                 ? {
-                    start: this.state.bouysById[path.bouys[0]],
-                    end: this.state.bouysById[path.bouys[path.bouys.length - 1]],
+                    start: this.props.bouysById[path.bouys[0]],
+                    end: this.props.bouysById[path.bouys[path.bouys.length - 1]],
                     length: path.length,
                     seconds: path.seconds,
-                    path: path.bouys.map( bouyId => this.state.bouysById[bouyId]),
+                    path: path.bouys.map( bouyId => this.props.bouysById[bouyId]),
                   }
                 : null;
     return route
@@ -194,9 +190,9 @@ class Overview extends React.Component {
     this.onRoute(startBouy, endBouy, ship, wind);
   }
   render() {
-    const map = this.state.legs && this.state.bouysById
-              ? <Map bouys={this.state.bouys}
-                  bouysById={this.state.bouysById}
+    const map = this.state.legs && this.props.bouysById
+              ? <Map bouys={this.props.bouys}
+                  bouysById={this.props.bouysById}
                   legs={this.state.legs}
                   bouySelected={this.bouySelected}
                   bouyHovered={this.bouyHovered}
