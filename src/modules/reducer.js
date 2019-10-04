@@ -28,7 +28,6 @@ const overviewReducer = (state = defaultState, action) => {
 
     case ACTIONS.Types.SET_BOUYS: {
         const bouys = action.payload;
-        console.log('reduce bouys', bouys);
         const newState = {
             ...state,
             bouys,
@@ -37,6 +36,15 @@ const overviewReducer = (state = defaultState, action) => {
               }, {}),
             };
         console.log('reduce bouys state', newState);
+        return newState;
+    }
+
+    case ACTIONS.Types.SET_LEGS: {
+        const legs = action.payload;
+        const newState = {
+            ...state,
+            legs,
+        };
         return newState;
     }
 

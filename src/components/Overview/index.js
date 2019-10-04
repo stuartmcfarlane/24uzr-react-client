@@ -20,6 +20,7 @@ const mapDispatchToProps = dispatch => ({
   setMaps: maps => dispatch(ACTIONS.setMaps(maps)),
   setSelectedMap: map => dispatch(ACTIONS.setSelectedMap(map)),
   setBouys: bouys => dispatch(ACTIONS.setBouys(bouys)),
+  setLegs: legs => dispatch(ACTIONS.setLegs(legs)),
 });
 
 class Overview extends React.Component {
@@ -65,9 +66,8 @@ class Overview extends React.Component {
       })
       .then(() => axios.get(`http://localhost:3001/api/legs?mapId=${mapId}`))
       .then((res) => {
-        this.setState({
-          legs: [ ...res.data ],
-        });
+        const legs = [ ...res.data ];
+        this.props.setLegs(legs)
       })
       .catch(console.error);
   }
@@ -190,10 +190,10 @@ class Overview extends React.Component {
     this.onRoute(startBouy, endBouy, ship, wind);
   }
   render() {
-    const map = this.state.legs && this.props.bouysById
+    const map = this.props.legs && this.props.bouysById
               ? <Map bouys={this.props.bouys}
                   bouysById={this.props.bouysById}
-                  legs={this.state.legs}
+                  legs={this.props.legs}
                   bouySelected={this.bouySelected}
                   bouyHovered={this.bouyHovered}
                   startBouy={this.state.startBouy}

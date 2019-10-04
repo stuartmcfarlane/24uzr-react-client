@@ -2,6 +2,7 @@ const Types = {
     SET_MAPS: "SET_MAPS",
     SET_SELECTED_MAP: "SET_SELECTED_MAP",
     SET_BOUYS: "SET_BOUYS",
+    SET_LEGS: "SET_LEGS",
   };
   
   // actions
@@ -20,10 +21,16 @@ const setBouys = bouys => ({
     payload: bouys
 });
   
+const setLegs = legs => ({
+    type: Types.SET_LEGS,
+    payload: legs
+});
+  
 export default {
     setMaps,
     setSelectedMap,
     setBouys,
+    setLegs,
     Types
 };
   
