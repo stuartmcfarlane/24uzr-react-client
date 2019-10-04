@@ -22,6 +22,8 @@ const mapDispatchToProps = dispatch => ({
   setBouys: bouys => dispatch(ACTIONS.setBouys(bouys)),
   setLegs: legs => dispatch(ACTIONS.setLegs(legs)),
   shipSelected: ship => dispatch(ACTIONS.shipSelected(ship)),
+  onRoute: (route) => dispatch(ACTIONS.onRoute(route)),
+  setRoute: (route) => dispatch(ACTIONS.setRoute(route)),
 });
 
 class Overview extends React.Component {
@@ -87,46 +89,23 @@ class Overview extends React.Component {
       hoveredBouy: bouy
     })
   }
-  path2route = (path) => {
-    const route = path && path.length
-                ? {
-                    start: this.props.bouysById[path.bouys[0]],
-                    end: this.props.bouysById[path.bouys[path.bouys.length - 1]],
-                    length: path.length,
-                    seconds: path.seconds,
-                    path: path.bouys.map( bouyId => this.props.bouysById[bouyId]),
-                  }
-                : null;
-    return route
-  }
   setRoute = (route) => {
+    this.props.setRoute(route)
     this.setState({
       route: route
     })
   }
-  onPathsFromApi = (paths) => {
-    const routes = paths.map( path => this.path2route(path));
-    this.setState({
-      routes: routes,
-      route: routes[0]
-    })
-  }
   onRoute = (startBouy, endBouy, ship, wind) => {
-    this.setState({
-      routes: [],
-      route: null,
-    })
-    if (ship && startBouy && endBouy && wind) {
-      axios
-        .get(makeRoute('http://localhost:3001/api/routes', {
-          shipId:ship._id,
-          mapId:this.props.selectedMap._id,
-          start:startBouy._id,
-          end:endBouy._id,
-          windDegrees: wind.degrees,
-          windKnots: wind.knots,
-        }))
-        .then((res) => this.onPathsFromApi(res.data.paths))
+    if (startBouy && endBouy && ship && wind) {
+      const route = {
+        shipId:ship._id,
+        mapId:this.props.selectedMap._id,
+        start:startBouy._id,
+        end:endBouy._id,
+        windDegrees: wind.degrees,
+        windKnots: wind.knots,
+      }
+      this.props.onRoute(route)
     }
   }
   setStartBouy = (bouy) => {
@@ -200,18 +179,18 @@ class Overview extends React.Component {
                   bouyHovered={this.bouyHovered}
                   startBouy={this.state.startBouy}
                   endBouy={this.state.endBouy}
-                  route={this.state.route || this.state.routeHighlighted}
+                  route={this.props.route || this.state.routeHighlighted}
                   highlightBouy={this.state.hoveredBouy}
                   wind={this.state.wind}
                   />
               : 'Loading map';
-    const route = this.state.route
+    const route = this.props.route
                 ? <div>
                     <button onClick={this.setRoute.bind(this, null)}>Select other root</button>
-                    <Route route={this.state.route} bouyHovered={this.bouyHovered}/>
+                    <Route route={this.props.route} bouyHovered={this.bouyHovered}/>
                   </div>
-                : this.state.routes && this.state.routes.length
-                ? <RouteSelector routes={this.state.routes}
+                : this.props.routes && this.props.routes.length
+                ? <RouteSelector routes={this.props.routes}
                                  routeSelected={this.setRoute} 
                                  routeHovered={this.routeHovered}/>
                 : '';

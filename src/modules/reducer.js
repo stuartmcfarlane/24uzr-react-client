@@ -35,7 +35,6 @@ const overviewReducer = (state = defaultState, action) => {
                 bouysById[bouy._id] = bouy; return bouysById;
               }, {}),
             };
-        console.log('reduce bouys state', newState);
         return newState;
     }
 
@@ -53,6 +52,47 @@ const overviewReducer = (state = defaultState, action) => {
         const newState = {
             ...state,
             ship,
+        };
+        return newState;
+    }
+
+    case ACTIONS.Types.REQUEST_ROUTES: {
+        const newState = {
+            ...state,
+            route: null,
+            routes: [],
+        };
+        return newState;
+    }
+
+    case ACTIONS.Types.RECIEVED_ROUTES: {
+        const paths = action.payload
+        const routes = paths.map( path => {
+            return path && path.length
+            ? {
+                start: state.bouysById[path.bouys[0]],
+                end: state.bouysById[path.bouys[path.bouys.length - 1]],
+                length: path.length,
+                seconds: path.seconds,
+                path: path.bouys.map( bouyId => state.bouysById[bouyId]),
+              }
+            : null;
+
+        });
+        const route = routes[0]
+        const newState = {
+            ...state,
+            routes,
+            route,
+        };
+        return newState;
+    }
+
+    case ACTIONS.Types.SET_ROUTE: {
+        const route = action.payload;
+        const newState = {
+            ...state,
+            route,
         };
         return newState;
     }
