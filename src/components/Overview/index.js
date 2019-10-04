@@ -17,8 +17,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  createItem: item => dispatch(ACTIONS.createItem(item)),
-  deleteItem: id => dispatch(ACTIONS.deleteItem(id))
+  setMaps: maps => dispatch(ACTIONS.setMaps(maps))
 });
 
 class Overview extends React.Component {
@@ -46,24 +45,21 @@ class Overview extends React.Component {
     };
   }
   componentDidMount() {
-    this.props.createItem({ item: 'get data from rest api'})
     let mapId;
     axios
       .get('http://localhost:3001/api/maps')
       .then((res) => {
-        this.props.createItem({ item: 'process map'})
         const maps = [...res.data];
+        this.props.setMaps(maps)
         // const selectedMap = maps.filter( map => map.name === 'simple graph' )[0]
         const selectedMap = maps.filter( map => map.name === '24uzr-2016' )[0]
         mapId = selectedMap._id
         this.setState({
-          maps,
           selectedMap
         })
       })
       .then( () => axios.get(`http://localhost:3001/api/bouys?mapId=${mapId}`) )
       .then((res) => {
-        this.props.createItem({ item: 'process bouys'})
         const bouys = [ ...res.data ];
         this.setState({
           bouys,
@@ -74,7 +70,6 @@ class Overview extends React.Component {
       })
       .then(() => axios.get(`http://localhost:3001/api/legs?mapId=${mapId}`))
       .then((res) => {
-        this.props.createItem({ item: 'process legs'})
         this.setState({
           legs: [ ...res.data ],
         });

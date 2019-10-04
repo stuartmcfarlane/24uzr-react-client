@@ -25,7 +25,6 @@ class RouteSelector extends React.Component {
           {
             this.props.routes.map(
               (route, i) => {
-                const { start, end, length } = route;
                 const nMiles = (route.length * nmPerMetre).toFixed(2);
                 const nTime = humanTime(route.seconds);
                 return (

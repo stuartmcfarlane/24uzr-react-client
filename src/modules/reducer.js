@@ -1,25 +1,19 @@
 import ACTIONS from "./action";
 
 const defaultState = {
-  items: []
+  items: [],
+  maps: [],
+  selectedMap: null,
 };
 
-const todoReducer = (state = defaultState, action) => {
+const overviewReducer = (state = defaultState, action) => {
   switch (action.type) {
-    case ACTIONS.Types.CREATE_ITEM: {
-      console.log(action);
-
-      let item = action.payload;
-      let newItem = { id: state.items.length + 1, description: item };
-      let newState = {...state};
-      newState.items.push(newItem);
-      return newState;
-    }
-
-    case ACTIONS.Types.DELETE_ITEM: {
-      let newState = {...state};
-      let item = action.payload;
-      newState.items.filter(i => i.id !== item.id);
+    case ACTIONS.Types.SET_MAPS: {
+        const maps = action.payload;
+        const newState = {
+            ...state,
+            maps,
+        };
       return newState;
     }
 
@@ -28,4 +22,4 @@ const todoReducer = (state = defaultState, action) => {
   }
 };
 
-export default todoReducer;
+export default overviewReducer;

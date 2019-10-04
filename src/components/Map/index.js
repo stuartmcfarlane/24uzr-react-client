@@ -103,9 +103,6 @@ class Map extends React.Component {
   }
 }
 
-const makeWindVector = (viewBox, wind) => {
-  return '';
-}
 const getBoundingBox = (bouys) => {
   return bouys.reduce((boundingBox, bouy) => {
     return {

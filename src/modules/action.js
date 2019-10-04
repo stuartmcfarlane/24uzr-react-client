@@ -1,22 +1,17 @@
 const Types = {
-    CREATE_ITEM: "CREATE_ITEM",
-    DELETE_ITEM: "DELETE_ITEM"
+    SET_MAPS: "SET_MAPS"
   };
   
   // actions
-const createItem = task => ({
-    type: Types.CREATE_ITEM,
-    payload: task
-  });
+const setMaps = maps => {
+    return {
+        type: Types.SET_MAPS,
+        payload: maps
+    }
+};
   
-  const deleteItem = id => ({
-    type: Types.DELETE_ITEM,
-    payload: id
-  });
-  
-  export default {
-    createItem,
-    deleteItem,
+export default {
+    setMaps,
     Types
-  };
+};
   

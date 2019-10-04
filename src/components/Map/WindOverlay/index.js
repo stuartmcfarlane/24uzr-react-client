@@ -6,7 +6,6 @@ class WindOverlay extends React.Component {
       boundingBox,
       wind,
     } = this.props;
-    console.log('WindOverlay', this.props)
     const arrowCount = 20;
     const lineWidth = (boundingBox.right - boundingBox.left) / 800;
     const arrows = makeGrid(boundingBox, arrowCount, arrowCount)
@@ -23,7 +22,7 @@ class WindOverlay extends React.Component {
 
 function line2windArrow(color, lineWidth, line, key) {
   return (
-    <React.Fragment>
+    <React.Fragment key={key}>
       {point2circle(color, lineWidth * 2, { x: line.x1, y: line.y1})}
       {line2svg(color, lineWidth, line, key)}
     </React.Fragment>
@@ -54,22 +53,22 @@ function point2circle(color, radius, point, key) {
   )  
 }
 
-function box2svg(stroke, lineWidth, box, key) {
-  const path = `M ${box.left} ${box.top} H ${box.right} V ${box.bottom} H ${box.left} Z`;
-  return (
-    <path key={key}
-          d={path}
-          stroke={stroke}
-          strokeWidth={lineWidth}
-          fill="transparent"
-    />
-  )  
-}
+// move to svg module
+// function box2svg(stroke, lineWidth, box, key) {
+//   const path = `M ${box.left} ${box.top} H ${box.right} V ${box.bottom} H ${box.left} Z`;
+//   return (
+//     <path key={key}
+//           d={path}
+//           stroke={stroke}
+//           strokeWidth={lineWidth}
+//           fill="transparent"
+//     />
+//   )  
+// }
 
 function makeGrid(box, xCount, yCount) {
   const width = (box.right - box.left) / xCount;
   const height = (box.bottom - box.top) / yCount;
-  console.log('box', box, width, height)
   const originBox = {
     top: box.top,
     left: box.left,
