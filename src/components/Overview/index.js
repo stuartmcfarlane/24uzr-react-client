@@ -1,16 +1,31 @@
 import React from 'react';
+import { connect } from "react-redux";
+
+import axios from 'axios';
+
 import ShipSelector from '../ShipSelector';
 import Ship from '../Ship';
 import Map from '../Map';
 import Route from '../Route';
 import RouteSelector from '../RouteSelector';
 
-import axios from 'axios';
+
+import ACTIONS from "../../modules/action";
+
+const mapStateToProps = state => ({
+  ...state
+});
+
+const mapDispatchToProps = dispatch => ({
+  createItem: item => dispatch(ACTIONS.createItem(item)),
+  deleteItem: id => dispatch(ACTIONS.deleteItem(id))
+});
 
 class Overview extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      items: [], // bogus state for redux example
       maps: [],
       selectedMap: null,
       ship: null,
@@ -31,10 +46,12 @@ class Overview extends React.Component {
     };
   }
   componentDidMount() {
+    this.props.createItem({ item: 'get data from rest api'})
     let mapId;
     axios
       .get('http://localhost:3001/api/maps')
       .then((res) => {
+        this.props.createItem({ item: 'process map'})
         const maps = [...res.data];
         // const selectedMap = maps.filter( map => map.name === 'simple graph' )[0]
         const selectedMap = maps.filter( map => map.name === '24uzr-2016' )[0]
@@ -46,6 +63,7 @@ class Overview extends React.Component {
       })
       .then( () => axios.get(`http://localhost:3001/api/bouys?mapId=${mapId}`) )
       .then((res) => {
+        this.props.createItem({ item: 'process bouys'})
         const bouys = [ ...res.data ];
         this.setState({
           bouys,
@@ -56,6 +74,7 @@ class Overview extends React.Component {
       })
       .then(() => axios.get(`http://localhost:3001/api/legs?mapId=${mapId}`))
       .then((res) => {
+        this.props.createItem({ item: 'process legs'})
         this.setState({
           legs: [ ...res.data ],
         });
@@ -332,4 +351,8 @@ function makeRoute(url, query) {
   return `${url}${qs.length ? '?' : ''}${qs}`;
 }
 
-export default Overview;
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Overview);
+
