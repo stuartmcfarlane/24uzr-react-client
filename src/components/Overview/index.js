@@ -17,7 +17,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  setMaps: maps => dispatch(ACTIONS.setMaps(maps))
+  setMaps: maps => dispatch(ACTIONS.setMaps(maps)),
+  setSelectedMap: map => dispatch(ACTIONS.setSelectedMap(map)),
 });
 
 class Overview extends React.Component {
@@ -54,9 +55,7 @@ class Overview extends React.Component {
         // const selectedMap = maps.filter( map => map.name === 'simple graph' )[0]
         const selectedMap = maps.filter( map => map.name === '24uzr-2016' )[0]
         mapId = selectedMap._id
-        this.setState({
-          selectedMap
-        })
+        this.props.setSelectedMap(selectedMap);
       })
       .then( () => axios.get(`http://localhost:3001/api/bouys?mapId=${mapId}`) )
       .then((res) => {

@@ -17,6 +17,15 @@ const overviewReducer = (state = defaultState, action) => {
       return newState;
     }
 
+    case ACTIONS.Types.SET_SELECTED_MAP: {
+        const selectedMap = action.payload;
+        const newState = {
+            ...state,
+            selectedMap,
+        };
+      return newState;
+    }
+
     default:
       return state;
   }
