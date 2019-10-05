@@ -4,12 +4,6 @@ import prettyMs from 'pretty-ms';
 const nmPerMetre = 0.000539957;
 
 class RouteSelector extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      routes: []
-    };
-  }
   routeSelected = (route) => {
     this.props.routeSelected(route);
   }
