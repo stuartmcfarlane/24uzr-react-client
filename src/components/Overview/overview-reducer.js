@@ -1,15 +1,18 @@
 import ACTIONS from "./overview-actions";
 
 const defaultState = {
-    // overview: {
-        maps: [],
-        selectedMap: null,      
-    // }
+    maps: [],
+    selectedMap: null,
+    ship: null,
+    legs: [],
+    bouys: [],
+    bouysById: {},
+    routes: [],
+    route: null,
+    selectedBouy: null,
 };
 
 const overviewReducer = (state = defaultState, action) => {
-    console.log('overview state', state)
-    console.log('overview action', action)
   switch (action.type) {
     case ACTIONS.Types.SET_MAPS: {
         const maps = action.payload;
@@ -55,6 +58,15 @@ const overviewReducer = (state = defaultState, action) => {
         const newState = {
             ...state,
             ship,
+        };
+        return newState;
+    }
+
+    case ACTIONS.Types.BOUY_SELECTED: {
+        const selectedBouy = action.payload;
+        const newState = {
+            ...state,
+            selectedBouy,
         };
         return newState;
     }

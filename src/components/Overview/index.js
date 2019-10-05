@@ -15,18 +15,9 @@ class Overview extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      maps: [],
-      selectedMap: null,
-      ship: null,
-      selectedBouy: null,
-      legs: [],
-      bouys: [],
-      bouysById: {},
       hoveredBouy: null,
       startBouy: null,
       endBouy: null,
-      routes: [],
-      route: null,
       routeHighlighted: null,
       wind: {
         degrees: 45,
@@ -65,9 +56,7 @@ class Overview extends React.Component {
     this.onRoute(startBouy, endBouy, ship, wind);
   }
   bouySelected = (bouy) => {
-    this.setState({
-      selectedBouy: bouy
-    })
+    this.props.bouySelected(bouy)
   }
   bouyHovered = (bouy) => {
     this.setState({
@@ -97,6 +86,7 @@ class Overview extends React.Component {
     if (!bouy) {
       this.setRoute(null)
     }
+    this.props.selectedBouy(null)
     this.setState({
       selectedBouy: null,
       startBouy: bouy
@@ -111,6 +101,7 @@ class Overview extends React.Component {
     if (!bouy) {
       this.setRoute(null)
     }
+    this.props.selectedBouy(null)
     this.setState({
       selectedBouy: null,
       endBouy: bouy
@@ -232,14 +223,14 @@ class Overview extends React.Component {
             }
           </div>
           <div className="row">
-            {this.state.selectedBouy
+            {this.props.selectedBouy
                 ? <div style={bouyStyle}>
                     <h3>Selected bouy</h3>
-                    <p>{this.state.selectedBouy.name}</p>
-                    <p>{this.state.selectedBouy.location.lat.toFixed(4)} N</p>
-                    <p>{this.state.selectedBouy.location.lon.toFixed(4)} E</p>
-                    <button onClick={this.setStartBouy.bind(this, this.state.selectedBouy)}>From</button>
-                    <button onClick={this.setEndBouy.bind(this, this.state.selectedBouy)}>To</button>
+                    <p>{this.props.selectedBouy.name}</p>
+                    <p>{this.props.selectedBouy.location.lat.toFixed(4)} N</p>
+                    <p>{this.props.selectedBouy.location.lon.toFixed(4)} E</p>
+                    <button onClick={this.setStartBouy.bind(this, this.props.selectedBouy)}>From</button>
+                    <button onClick={this.setEndBouy.bind(this, this.props.selectedBouy)}>To</button>
                   </div>
                 : ''
             }

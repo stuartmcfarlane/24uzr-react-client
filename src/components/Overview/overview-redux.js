@@ -16,6 +16,7 @@ export const mapStateToProps = state => {
     shipSelected: ship => dispatch(ACTIONS.shipSelected(ship)),
     onRoute: (route) => dispatch(ACTIONS.onRoute(route)),
     setRoute: (route) => dispatch(ACTIONS.setRoute(route)),
+    bouySelected: (bouy) => dispatch(ACTIONS.bouySelected(bouy)),
   });
   
   

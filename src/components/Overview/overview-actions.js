@@ -11,6 +11,7 @@ const Types = {
     REQUEST_ROUTES: "REQUEST_ROUTES",
     RECIEVED_ROUTES: "RECIEVED_ROUTES",
     SET_ROUTE: "SET_ROUTE",
+    BOUY_SELECTED: "BOUY_SELECTED",
   };
   
   // actions
@@ -33,10 +34,15 @@ const setLegs = legs => ({
     type: Types.SET_LEGS,
     payload: legs
 });
-  
+
 const shipSelected = ship => ({
     type: Types.SHIP_SELECTED,
     payload: ship
+});
+
+const bouySelected = bouy => ({
+    type: Types.BOUY_SELECTED,
+    payload: bouy
 });
 
 const onRoute = (route) => dispatch => {
@@ -70,6 +76,7 @@ export default {
     requestRoutes,
     recieveRoutes,
     setRoute,
+    bouySelected,
     Types
 };
   
