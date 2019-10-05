@@ -42,15 +42,6 @@ class Overview extends React.Component {
     const { startBouy, endBouy, wind } = this.props;
     this.onRoute(startBouy, endBouy, ship, wind);
   }
-  bouySelected = (bouy) => {
-    this.props.bouySelected(bouy)
-  }
-  bouyHovered = (bouy) => {
-    this.props.bouyHovered(bouy)
-  }
-  setRoute = (route) => {
-    this.props.setRoute(route)
-  }
   onRoute = (startBouy, endBouy, ship, wind) => {
     if (startBouy && endBouy && ship && wind) {
       const route = {
@@ -66,7 +57,7 @@ class Overview extends React.Component {
   }
   setStartBouy = (bouy) => {
     if (!bouy) {
-      this.setRoute(null)
+      this.props.setRoute(null)
     }
     this.props.bouySelected(null)
     this.props.startBouySelected(bouy)
@@ -77,7 +68,7 @@ class Overview extends React.Component {
   }
   setEndBouy = (bouy) => {
     if (!bouy) {
-      this.setRoute(null)
+      this.props.setRoute(null)
     }
     this.props.bouySelected(null)
     this.props.endBouySelected(bouy)
@@ -90,9 +81,6 @@ class Overview extends React.Component {
     const { startBouy, endBouy, wind } = this.props;
     this.props.shipSelected(ship)
     this.onRoute(startBouy, endBouy, null, wind)
-  }
-  routeHovered = (route) => {
-    this.props.routeHighlighted(route)
   }
   onWindDirection = (ev) => {
     this.props.onWindDirection(ev.target.value)
@@ -110,8 +98,8 @@ class Overview extends React.Component {
               ? <Map bouys={this.props.bouys}
                   bouysById={this.props.bouysById}
                   legs={this.props.legs}
-                  bouySelected={this.bouySelected}
-                  bouyHovered={this.bouyHovered}
+                  bouySelected={this.props.bouySelected}
+                  bouyHovered={this.props.bouyHovered}
                   startBouy={this.props.startBouy}
                   endBouy={this.props.endBouy}
                   route={this.props.route || this.props.highlightedRoute}
@@ -121,13 +109,13 @@ class Overview extends React.Component {
               : 'Loading map';
     const route = this.props.route
                 ? <div>
-                    <button onClick={this.setRoute.bind(this, null)}>Select other root</button>
-                    <Route route={this.props.route} bouyHovered={this.bouyHovered}/>
+                    <button onClick={this.props.setRoute.bind(this, null)}>Select other root</button>
+                    <Route route={this.props.route} bouyHovered={this.props.bouyHovered}/>
                   </div>
                 : this.props.routes && this.props.routes.length
                 ? <RouteSelector routes={this.props.routes}
-                                 routeSelected={this.setRoute} 
-                                 routeHovered={this.routeHovered}/>
+                                 routeSelected={this.props.setRoute} 
+                                 routeHovered={this.props.routeHighlighted}/>
                 : '';
     const windSelector = (
       <form onSubmit={this.onWindUpdated}>
