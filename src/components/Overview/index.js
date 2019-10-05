@@ -53,9 +53,9 @@ class Overview extends React.Component {
       this.onRoute(startBouy, bouy, ship, wind)
     }
   }
-  onSelectShip = (ship) => {
+  onSelectShip = _ => {
     const { startBouy, endBouy, wind } = this.props;
-    this.props.shipSelected(ship)
+    this.props.shipSelected(null)
     this.onRoute(startBouy, endBouy, null, wind)
   }
   onWindDirection = (ev) => {

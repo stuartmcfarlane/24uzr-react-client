@@ -1,24 +1,11 @@
 import React from 'react';
-import axios from 'axios';
+
+import { connect } from "react-redux";
+import { mapStateToProps, mapDispatchToProps} from "./shipSelector-redux";
 
 class ShipSelector extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      ships: []
-    };
-  }
-  shipSelected = (ship) => {
-    this.props.shipSelected(ship);
-  }
   componentDidMount() {
-    axios.get('http://localhost:3001/api/ships')
-      .then( (res) => {
-        this.setState({
-          ships: [ ...res.data ],
-        });
-      })
-      .catch(console.error);
+    this.props.fetchShips()
   }
   render() {
     return (
@@ -26,9 +13,9 @@ class ShipSelector extends React.Component {
         <h2>Select a ship</h2>
         <ul style={shipListStyle}>
           {
-            this.state.ships.map(
+            this.props.ships.map(
               (ship) => <li key={ship._id}
-                            onClick={this.shipSelected.bind(this, ship)}
+                            onClick={this.props.shipSelected.bind(this, ship)}
                             style={shipStyle}
                         >{ship.name}</li>
             )
@@ -54,4 +41,8 @@ const shipStyle = {
   borderBottom: '1px solid #aaa',
   backgroundColor: '#eee'
 };
-export default ShipSelector;
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ShipSelector)
