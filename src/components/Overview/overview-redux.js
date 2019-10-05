@@ -17,6 +17,12 @@ export const mapStateToProps = state => {
     onRoute: (route) => dispatch(ACTIONS.onRoute(route)),
     setRoute: (route) => dispatch(ACTIONS.setRoute(route)),
     bouySelected: (bouy) => dispatch(ACTIONS.bouySelected(bouy)),
+    startBouySelected: (bouy) => dispatch(ACTIONS.startBouySelected(bouy)),
+    endBouySelected: (bouy) => dispatch(ACTIONS.endBouySelected(bouy)),
+    bouyHovered: (bouy) => dispatch(ACTIONS.bouyHovered(bouy)),
+    onWindDirection: (degrees) => dispatch(ACTIONS.onWindDirection(degrees)),
+    onWindSpeed: (knots) => dispatch(ACTIONS.onWindSpeed(knots)),
+    routeHighlighted: (route) => dispatch(ACTIONS.routeHighlighted(route)),
   });
   
   

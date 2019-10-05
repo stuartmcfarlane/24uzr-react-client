@@ -12,19 +12,6 @@ import RouteSelector from '../RouteSelector';
 import { mapStateToProps, mapDispatchToProps} from "./overview-redux";
 
 class Overview extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      hoveredBouy: null,
-      startBouy: null,
-      endBouy: null,
-      routeHighlighted: null,
-      wind: {
-        degrees: 45,
-        knots: 3
-      },
-    };
-  }
   componentDidMount() {
     console.log('overviewDidMount props', this.props)
     let mapId;
@@ -52,22 +39,17 @@ class Overview extends React.Component {
   }
   shipSelected = (ship) => {
     this.props.shipSelected(ship)
-    const { startBouy, endBouy, wind } = this.state;
+    const { startBouy, endBouy, wind } = this.props;
     this.onRoute(startBouy, endBouy, ship, wind);
   }
   bouySelected = (bouy) => {
     this.props.bouySelected(bouy)
   }
   bouyHovered = (bouy) => {
-    this.setState({
-      hoveredBouy: bouy
-    })
+    this.props.bouyHovered(bouy)
   }
   setRoute = (route) => {
     this.props.setRoute(route)
-    this.setState({
-      route: route
-    })
   }
   onRoute = (startBouy, endBouy, ship, wind) => {
     if (startBouy && endBouy && ship && wind) {
@@ -86,13 +68,9 @@ class Overview extends React.Component {
     if (!bouy) {
       this.setRoute(null)
     }
-    this.props.selectedBouy(null)
-    this.setState({
-      selectedBouy: null,
-      startBouy: bouy
-    })
-    const { endBouy, wind } = this.state;
-    const { ship } = this.props;
+    this.props.bouySelected(null)
+    this.props.startBouySelected(bouy)
+    const { endBouy, ship, wind } = this.props;
     if (bouy && endBouy) {
       this.onRoute(bouy, endBouy, ship, wind)
     }
@@ -101,49 +79,30 @@ class Overview extends React.Component {
     if (!bouy) {
       this.setRoute(null)
     }
-    this.props.selectedBouy(null)
-    this.setState({
-      selectedBouy: null,
-      endBouy: bouy
-    });
-    const { startBouy, wind } = this.state;
-    const { ship } = this.props;
+    this.props.bouySelected(null)
+    this.props.endBouySelected(bouy)
+    const { startBouy, ship, wind } = this.props;
     if (startBouy && bouy) {
       this.onRoute(startBouy, bouy, ship, wind)
     }
   }
   onSelectShip = (ship) => {
-    const { startBouy, endBouy, wind } = this.state;
-    this.setState({
-      ship: null
-    })
+    const { startBouy, endBouy, wind } = this.props;
+    this.props.shipSelected(ship)
     this.onRoute(startBouy, endBouy, null, wind)
   }
   routeHovered = (route) => {
-    this.setState({
-      routeHighlighted: route
-    })
+    this.props.routeHighlighted(route)
   }
   onWindDirection = (ev) => {
-    this.setState({
-      wind: {
-        knots: this.state.wind && this.state.wind.knots,
-        degrees: ev.target.value,
-      }
-    })
+    this.props.onWindDirection(ev.target.value)
   }
   onWindSpeed = (ev) => {
-    this.setState({
-      wind: {
-        knots: ev.target.value,
-        degrees: this.state.wind && this.state.wind.degrees,
-      }
-    })
+    this.props.onWindSpeed(ev.target.value)
   }
   onWindUpdated = (ev) => {
     ev.preventDefault();
-    const { startBouy, endBouy, wind } = this.state;
-    const { ship } = this.props;
+    const { startBouy, endBouy, ship, wind } = this.props;
     this.onRoute(startBouy, endBouy, ship, wind);
   }
   render() {
@@ -153,11 +112,11 @@ class Overview extends React.Component {
                   legs={this.props.legs}
                   bouySelected={this.bouySelected}
                   bouyHovered={this.bouyHovered}
-                  startBouy={this.state.startBouy}
-                  endBouy={this.state.endBouy}
-                  route={this.props.route || this.state.routeHighlighted}
-                  highlightBouy={this.state.hoveredBouy}
-                  wind={this.state.wind}
+                  startBouy={this.props.startBouy}
+                  endBouy={this.props.endBouy}
+                  route={this.props.route || this.props.highlightedRoute}
+                  highlightBouy={this.props.hoveredBouy}
+                  wind={this.props.wind}
                   />
               : 'Loading map';
     const route = this.props.route
@@ -176,13 +135,13 @@ class Overview extends React.Component {
         <label>
           Direction
           <input type="number"
-                 value={this.state.wind.degrees}
+                 value={this.props.wind.degrees}
                  onChange={this.onWindDirection}
                  />
         </label>
         <label>Speed
           <input type="number"
-                 value={this.state.wind.knots}
+                 value={this.props.wind.knots}
                  onChange={this.onWindSpeed}
                  />
         </label>
@@ -201,22 +160,22 @@ class Overview extends React.Component {
           }
           {windSelector}
           <div className="row">
-            {this.state.startBouy
+            {this.props.startBouy
                 ? <div style={bouyStyle}>
                     <h3>From</h3>
-                    <p>{this.state.startBouy.name}</p>
-                    <p>{this.state.startBouy.location.lat.toFixed(4)} N</p>
-                    <p>{this.state.startBouy.location.lon.toFixed(4)} E</p>
+                    <p>{this.props.startBouy.name}</p>
+                    <p>{this.props.startBouy.location.lat.toFixed(4)} N</p>
+                    <p>{this.props.startBouy.location.lon.toFixed(4)} E</p>
                     <button onClick={this.setStartBouy.bind(this, null)}>X</button>
                   </div>
                 : ''
             }
-            {this.state.endBouy
+            {this.props.endBouy
                 ? <div style={bouyStyle}>
                     <h3>To</h3>
-                    <p>{this.state.endBouy.name}</p>
-                    <p>{this.state.endBouy.location.lat.toFixed(4)} N</p>
-                    <p>{this.state.endBouy.location.lon.toFixed(4)} E</p>
+                    <p>{this.props.endBouy.name}</p>
+                    <p>{this.props.endBouy.location.lat.toFixed(4)} N</p>
+                    <p>{this.props.endBouy.location.lon.toFixed(4)} E</p>
                     <button onClick={this.setEndBouy.bind(this, null)}>X</button>
                   </div>
                 : ''
@@ -234,12 +193,12 @@ class Overview extends React.Component {
                   </div>
                 : ''
             }
-            {this.state.hoveredBouy
+            {this.props.hoveredBouy
                 ? <div style={bouyStyle}>
                     <h3>Bouy</h3>
-                    <p>{this.state.hoveredBouy.name}</p>
-                    <p>{this.state.hoveredBouy.location.lat.toFixed(4)} N</p>
-                    <p>{this.state.hoveredBouy.location.lon.toFixed(4)} E</p>
+                    <p>{this.props.hoveredBouy.name}</p>
+                    <p>{this.props.hoveredBouy.location.lat.toFixed(4)} N</p>
+                    <p>{this.props.hoveredBouy.location.lon.toFixed(4)} E</p>
                   </div>
                 : ''
             }

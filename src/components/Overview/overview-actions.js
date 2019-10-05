@@ -12,6 +12,12 @@ const Types = {
     RECIEVED_ROUTES: "RECIEVED_ROUTES",
     SET_ROUTE: "SET_ROUTE",
     BOUY_SELECTED: "BOUY_SELECTED",
+    BOUY_HOVERED: "BOUY_HOVERED",
+    START_BOUY_SELECTED: "START_BOUY_SELECTED",
+    END_BOUY_SELECTED: "END_BOUY_SELECTED",
+    ON_WIND_DIRECTION: "ON_WIND_DIRECTION",
+    ON_WIND_SPEED: "ON_WIND_SPEED",
+    ROUTE_HIGHLIGHTED: "ROUTE_HIGHLIGHTED",
   };
   
   // actions
@@ -45,6 +51,21 @@ const bouySelected = bouy => ({
     payload: bouy
 });
 
+const startBouySelected = bouy => ({
+    type: Types.START_BOUY_SELECTED,
+    payload: bouy
+});
+
+const endBouySelected = bouy => ({
+    type: Types.END_BOUY_SELECTED,
+    payload: bouy
+});
+
+const bouyHovered = bouy => ({
+    type: Types.BOUY_HOVERED,
+    payload: bouy
+});
+
 const onRoute = (route) => dispatch => {
     dispatch(requestRoutes())
     axios.get(makeApiUrl('http://localhost:3001/api/routes', route))
@@ -65,6 +86,21 @@ const setRoute = route => ({
     payload: route
 });
   
+const onWindDirection = degrees => ({
+    type: Types.ON_WIND_DIRECTION,
+    payload: degrees
+});
+  
+const onWindSpeed = knots => ({
+    type: Types.ON_WIND_SPEED,
+    payload: knots
+});
+  
+const routeHighlighted = route => ({
+    type: Types.ROUTE_HIGHLIGHTED,
+    payload: route
+});
+  
  
 export default {
     setMaps,
@@ -77,6 +113,12 @@ export default {
     recieveRoutes,
     setRoute,
     bouySelected,
+    startBouySelected,
+    endBouySelected,
+    bouyHovered,
+    onWindDirection,
+    onWindSpeed,
+    routeHighlighted,
     Types
 };
   

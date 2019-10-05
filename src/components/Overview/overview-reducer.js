@@ -10,6 +10,14 @@ const defaultState = {
     routes: [],
     route: null,
     selectedBouy: null,
+    hoveredBouy: null,
+    startBouy: null,
+    endBouy: null,
+    wind: {
+        degrees: 45,
+        knots: 3
+    },
+    highlightedRoute: null,
 };
 
 const overviewReducer = (state = defaultState, action) => {
@@ -71,6 +79,33 @@ const overviewReducer = (state = defaultState, action) => {
         return newState;
     }
 
+    case ACTIONS.Types.START_BOUY_SELECTED: {
+        const startBouy = action.payload;
+        const newState = {
+            ...state,
+            startBouy,
+        };
+        return newState;
+    }
+
+    case ACTIONS.Types.END_BOUY_SELECTED: {
+        const endBouy = action.payload;
+        const newState = {
+            ...state,
+            endBouy,
+        };
+        return newState;
+    }
+
+    case ACTIONS.Types.BOUY_HOVERED: {
+        const hoveredBouy = action.payload;
+        const newState = {
+            ...state,
+            hoveredBouy,
+        };
+        return newState;
+    }
+
     case ACTIONS.Types.REQUEST_ROUTES: {
         const newState = {
             ...state,
@@ -108,6 +143,41 @@ const overviewReducer = (state = defaultState, action) => {
         const newState = {
             ...state,
             route,
+        };
+        return newState;
+    }
+
+    case ACTIONS.Types.ON_WIND_DIRECTION: {
+        const degrees = action.payload;
+            const wind = {
+                ...state.wind,
+                degrees,
+            }
+        const newState = {
+            ...state,
+            wind,
+        };
+        return newState;
+    }
+
+    case ACTIONS.Types.ON_WIND_SPEED: {
+        const knots = action.payload;
+            const wind = {
+                ...state.wind,
+                knots,
+            }
+        const newState = {
+            ...state,
+            wind,
+        };
+        return newState;
+    }
+
+    case ACTIONS.Types.ROUTE_HIGHLIGHTED: {
+        const highlightedRoute = action.payload;
+        const newState = {
+            ...state,
+            highlightedRoute,
         };
         return newState;
     }
