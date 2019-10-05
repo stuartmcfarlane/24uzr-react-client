@@ -42,7 +42,7 @@ const onMounted = _ => dispatch => {
 const fetchMaps = _ => dispatch => {
     dispatch(requestMaps())
     axios
-    .get('http://localhost:3001/api/maps')
+    .get(makeApiUrl('maps'))
     .then((res) => {
       const maps = [...res.data];
       dispatch(recievedMaps(maps))
@@ -67,7 +67,7 @@ const recievedMaps = maps => ({
   
 const fetchLegs = mapId => dispatch => {
     dispatch(requestLegs())
-    axios.get(`http://localhost:3001/api/legs?mapId=${mapId}`)
+    axios.get(makeApiUrl('legs', {mapId:mapId}))
     .then((res) => {
       const legs = [ ...res.data ];
       dispatch(recievedLegs(legs))
@@ -86,7 +86,7 @@ const recievedLegs = legs => ({
   
 const fetchBouys = mapId => dispatch => {
     dispatch(requestBouys())
-    axios.get(`http://localhost:3001/api/bouys?mapId=${mapId}`)
+    axios.get(makeApiUrl('bouys',  {mapId:mapId}))
     .then((res) => {
       const bouys = [ ...res.data ];
       dispatch(recievedBouys(bouys))
@@ -150,7 +150,7 @@ const bouyHovered = bouy => ({
 
 const onRoute = (route) => dispatch => {
     dispatch(requestRoutes())
-    axios.get(makeApiUrl('http://localhost:3001/api/routes', route))
+    axios.get(makeApiUrl('routes', route))
     .then(res => dispatch(recieveRoutes(res.data.paths)))
     .catch(console.error)
 };

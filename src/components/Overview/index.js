@@ -1,8 +1,6 @@
 import React from 'react';
 import { connect } from "react-redux";
 
-import axios from 'axios';
-
 import ShipSelector from '../ShipSelector';
 import Ship from '../Ship';
 import Map from '../Map';
@@ -214,14 +212,6 @@ const bouyStyle = {
   width: '50%',
   float: 'left'
 };
-
-function makeRoute(url, query) {
-  const qs = Object.keys(query || {})
-    .filter(k => query[k] !== null && query[k] !== undefined)
-    .map(k => `${k}=${query[k]}`)
-    .join('&');
-  return `${url}${qs.length ? '?' : ''}${qs}`;
-}
 
 export default connect(
   mapStateToProps,
