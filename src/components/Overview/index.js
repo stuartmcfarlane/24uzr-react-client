@@ -9,28 +9,12 @@ import Map from '../Map';
 import Route from '../Route';
 import RouteSelector from '../RouteSelector';
 
-
-import ACTIONS from "../../modules/action";
-
-const mapStateToProps = state => ({
-  ...state
-});
-
-const mapDispatchToProps = dispatch => ({
-  setMaps: maps => dispatch(ACTIONS.setMaps(maps)),
-  setSelectedMap: map => dispatch(ACTIONS.setSelectedMap(map)),
-  setBouys: bouys => dispatch(ACTIONS.setBouys(bouys)),
-  setLegs: legs => dispatch(ACTIONS.setLegs(legs)),
-  shipSelected: ship => dispatch(ACTIONS.shipSelected(ship)),
-  onRoute: (route) => dispatch(ACTIONS.onRoute(route)),
-  setRoute: (route) => dispatch(ACTIONS.setRoute(route)),
-});
+import { mapStateToProps, mapDispatchToProps} from "./overview-redux";
 
 class Overview extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      items: [], // bogus state for redux example
       maps: [],
       selectedMap: null,
       ship: null,
@@ -51,6 +35,7 @@ class Overview extends React.Component {
     };
   }
   componentDidMount() {
+    console.log('overviewDidMount props', this.props)
     let mapId;
     axios
       .get('http://localhost:3001/api/maps')
