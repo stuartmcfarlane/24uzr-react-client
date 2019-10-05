@@ -13,29 +13,7 @@ import { mapStateToProps, mapDispatchToProps} from "./overview-redux";
 
 class Overview extends React.Component {
   componentDidMount() {
-    console.log('overviewDidMount props', this.props)
-    let mapId;
-    axios
-      .get('http://localhost:3001/api/maps')
-      .then((res) => {
-        const maps = [...res.data];
-        this.props.setMaps(maps)
-        // const selectedMap = maps.filter( map => map.name === 'simple graph' )[0]
-        const selectedMap = maps.filter( map => map.name === '24uzr-2016' )[0]
-        mapId = selectedMap._id
-        this.props.setSelectedMap(selectedMap);
-      })
-      .then( () => axios.get(`http://localhost:3001/api/bouys?mapId=${mapId}`) )
-      .then((res) => {
-        const bouys = [ ...res.data ];
-        this.props.setBouys(bouys)
-      })
-      .then(() => axios.get(`http://localhost:3001/api/legs?mapId=${mapId}`))
-      .then((res) => {
-        const legs = [ ...res.data ];
-        this.props.setLegs(legs)
-      })
-      .catch(console.error);
+    this.props.onMounted()
   }
   shipSelected = (ship) => {
     this.props.shipSelected(ship)

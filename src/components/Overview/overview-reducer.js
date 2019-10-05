@@ -22,6 +22,57 @@ const defaultState = {
 
 const overviewReducer = (state = defaultState, action) => {
   switch (action.type) {
+    case ACTIONS.Types.REQUEST_MAPS: {
+        const newState = {
+            ...state,
+        };
+      return newState;
+    }
+
+    case ACTIONS.Types.RECIEVED_MAPS: {
+        const maps = action.payload;
+        const newState = {
+            ...state,
+            maps,
+        };
+      return newState;
+    }
+
+    case ACTIONS.Types.REQUEST_LEGS: {
+        const newState = {
+            ...state,
+        };
+      return newState;
+    }
+
+    case ACTIONS.Types.RECIEVED_LEGS: {
+        const legs = action.payload;
+        const newState = {
+            ...state,
+            legs,
+        };
+      return newState;
+    }
+
+    case ACTIONS.Types.REQUEST_BOUYS: {
+        const newState = {
+            ...state,
+        };
+      return newState;
+    }
+
+    case ACTIONS.Types.RECIEVED_BOUYS: {
+        const bouys = action.payload;
+        const newState = {
+            ...state,
+            bouys,
+            bouysById: bouys.reduce((bouysById, bouy) => {
+                bouysById[bouy._id] = bouy; return bouysById;
+              }, {}),
+        };
+      return newState;
+    }
+
     case ACTIONS.Types.SET_MAPS: {
         const maps = action.payload;
         const newState = {

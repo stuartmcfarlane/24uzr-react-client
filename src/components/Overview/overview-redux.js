@@ -9,6 +9,16 @@ export const mapStateToProps = state => {
 };
   
   export const mapDispatchToProps = dispatch => ({
+    onMounted: _ => dispatch(ACTIONS.onMounted()),
+    fetchMaps: _ => dispatch(ACTIONS.fetchMaps()),
+    requestMaps: _ => dispatch(ACTIONS.requestMaps()),
+    recivedMaps: maps => dispatch(ACTIONS.recivedMaps(maps)),
+    fetchLegs: _ => dispatch(ACTIONS.fetchLegs()),
+    requestLegs: _ => dispatch(ACTIONS.requestLegs()),
+    recivedLegs: legs => dispatch(ACTIONS.recivedLegs(legs)),
+    fetchBouys: _ => dispatch(ACTIONS.fetchBouys()),
+    requestBouys: _ => dispatch(ACTIONS.requestBouys()),
+    recivedBouys: bouys => dispatch(ACTIONS.recivedBouys(bouys)),
     setMaps: maps => dispatch(ACTIONS.setMaps(maps)),
     setSelectedMap: map => dispatch(ACTIONS.setSelectedMap(map)),
     setBouys: bouys => dispatch(ACTIONS.setBouys(bouys)),
