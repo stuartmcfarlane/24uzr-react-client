@@ -1,6 +1,6 @@
 import React from 'react';
 import { Provider as ReduxProvider } from "react-redux";
-import configureStore from "../../modules/store";
+import configureStore from "./app-store";
 
 import Overview from '../Overview';
 

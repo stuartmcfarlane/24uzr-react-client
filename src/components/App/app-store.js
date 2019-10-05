@@ -5,7 +5,7 @@ import thunk from 'redux-thunk';
 // Logger with default options
 import logger from "redux-logger";
 
-import rootReducer from "./reducer";
+import rootReducer from "./app-reducer";
 
 export default function configureStore(initialState) {
     const store = createStore(
